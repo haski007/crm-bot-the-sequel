@@ -2,7 +2,6 @@ package resource
 
 import (
 	"github.com/Haski007/crm-bot-the-sequel/pkg/emoji"
-
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
@@ -14,9 +13,17 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 	//	return
 	//}
 	for update := range updates {
-		if command := update.Message.CommandWithAt(); command != "" {
-			switch {
+		if update.EditedMessage != nil {
+			continue
+		}
 
+		if update.Message.IsCommand() {
+			switch update.Message.CommandWithAt() {
+			case "menu":
+				bot.commandMenuHandler(update)
+
+			case "test":
+				bot.commandTestHandler(update)
 			default:
 				bot.Reply(update.Message.Chat.ID, "Such command does not exist! "+emoji.NoEntry)
 			}

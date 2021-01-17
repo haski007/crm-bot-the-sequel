@@ -41,4 +41,5 @@ const (
 	Pencil          = "\U0000270F"
 	Heart           = "\U00002764"
 	Failed          = "\U0000274C"
+	Page            = "\U0001F4C3"
 )
