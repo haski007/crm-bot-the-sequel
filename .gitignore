@@ -19,3 +19,6 @@ build/*
 # Secrets
 *.pem
 .env
+
+# Docker
+.docker
