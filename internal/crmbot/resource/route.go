@@ -17,6 +17,15 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 			continue
 		}
 
+		if update.CallbackQuery != nil {
+			switch update.CallbackQuery.Data {
+			case "settings":
+				bot.callSettingsHandler(update)
+			case "category":
+				bot.callCategorySettingsHandler(update)
+			}
+		}
+
 		if update.Message.IsCommand() {
 			switch update.Message.CommandWithAt() {
 			case "menu":
@@ -28,5 +37,6 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 				bot.Reply(update.Message.Chat.ID, "Such command does not exist! "+emoji.NoEntry)
 			}
 		}
+
 	}
 }

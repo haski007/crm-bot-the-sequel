@@ -9,11 +9,20 @@ var MainMenuButton = tgbotapi.NewInlineKeyboardButtonData("Главное Мен
 
 var MainMenu = tgbotapi.NewInlineKeyboardMarkup(
 	tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData("Настройки "+emoji.Gear, "configs"),
+		tgbotapi.NewInlineKeyboardButtonData("Настройки "+emoji.Gear, "settings"),
 		tgbotapi.NewInlineKeyboardButtonData("Склад "+emoji.Package, "stock"),
 	),
 	tgbotapi.NewInlineKeyboardRow(
 		tgbotapi.NewInlineKeyboardButtonData("Ревизия "+emoji.Page, "revision"),
-		tgbotapi.NewInlineKeyboardButtonData("Касса "+emoji.MoneyFace, "cashbox"),
+		tgbotapi.NewInlineKeyboardButtonData("Касса "+emoji.MoneyFace, "cash"),
+	),
+)
+
+var Settings = tgbotapi.NewInlineKeyboardMarkup(
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData("Категории "+emoji.Pencil, "category"),
+	),
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData("Ревизия "+emoji.Page, "revision"),
 	),
 )
