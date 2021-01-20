@@ -10,14 +10,7 @@ import (
 var session *mgo.Session
 var cfg config.MongoCfg
 
-type BotRepository struct {
-	ProductColl     *mgo.Collection
-	CategoryColl    *mgo.Collection
-	TransactionColl *mgo.Collection
-	CashColl        *mgo.Collection
-}
-
-func (r *BotRepository) InitDBConn() {
+func init() {
 	if err := env.Parse(&cfg); err != nil {
 		logrus.Fatalf("[env Parse] MongoCfg err: %s", err)
 	}
@@ -32,8 +25,4 @@ func (r *BotRepository) InitDBConn() {
 		logrus.Fatalf("[mgo Ping] addr: %s | err: %s", cfg.Addr, err)
 	}
 
-	r.ProductColl = session.DB(cfg.DBName).C("products")
-	r.CategoryColl = session.DB(cfg.DBName).C("categories")
-	r.TransactionColl = session.DB(cfg.DBName).C("transactions")
-	r.CashColl = session.DB(cfg.DBName).C("cash")
 }

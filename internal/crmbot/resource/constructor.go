@@ -10,9 +10,12 @@ import (
 )
 
 type CrmBotService struct {
-	Bot        *tgbotapi.BotAPI
-	Cfg        *config.Bot
-	Repository *mongodb.BotRepository
+	Bot                   *tgbotapi.BotAPI
+	Cfg                   *config.Bot
+	ProductRepository     *mongodb.ProductRepository
+	CategoryRepository    *mongodb.CategoryRepository
+	TransactionRepository *mongodb.TransactionRepository
+	CashRepository        *mongodb.CashRepository
 }
 
 func NewCrmBotService() (*CrmBotService, error) {
