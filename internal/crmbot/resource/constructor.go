@@ -4,14 +4,15 @@ import (
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/config"
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/repository/mongodb"
 	"github.com/caarlos0/env"
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/sirupsen/logrus"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 type CrmBotService struct {
-	Bot            *tgbotapi.BotAPI
-	Cfg            *config.Bot
-	ChatRepository *mongodb.ChatRepository
+	Bot        *tgbotapi.BotAPI
+	Cfg        *config.Bot
+	Repository *mongodb.BotRepository
 }
 
 func NewCrmBotService() (*CrmBotService, error) {
@@ -30,8 +31,8 @@ func NewCrmBotService() (*CrmBotService, error) {
 	/*
 	** ---> mongo Collection
 	 */
-	bot.ChatRepository = &mongodb.ChatRepository{}
-	bot.ChatRepository.InitDBConn()
+	bot.Repository = &mongodb.BotRepository{}
+	bot.Repository.InitDBConn()
 
 	bot.Bot, err = tgbotapi.NewBotAPI(bot.Cfg.GetToken().String())
 	if err != nil {

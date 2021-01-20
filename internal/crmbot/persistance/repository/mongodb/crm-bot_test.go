@@ -11,7 +11,7 @@ const (
 	mongoAddr = "mongodb://demian:password@172.20.0.2:27017"
 )
 
-func getCollection() *mgo.Collection {
+func getCollection(collName string) *mgo.Collection {
 	session, err := mgo.Dial(mongoAddr)
 	if err != nil {
 		logrus.Fatalf("[mgo Dial] addr: %s | err: %s", cfg.Addr, err)
