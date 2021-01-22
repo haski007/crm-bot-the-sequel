@@ -17,5 +17,4 @@ func (bot *CrmBotService) callCategorySettingsHandler(update tgbotapi.Update) {
 		keyboards.CategorySettings)
 	answer.ParseMode = "MarkDown"
 	bot.Bot.Send(answer)
-	//bot.Reply(chatID, fmt.Sprintln(messageID))
 }
