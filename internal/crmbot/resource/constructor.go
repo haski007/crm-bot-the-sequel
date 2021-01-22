@@ -34,8 +34,17 @@ func NewCrmBotService() (*CrmBotService, error) {
 	/*
 	** ---> mongo Collection
 	 */
-	bot.Repository = &mongodb.BotRepository{}
-	bot.Repository.InitDBConn()
+	bot.ProductRepository = &mongodb.ProductRepository{}
+	bot.ProductRepository.InitConn()
+
+	bot.CategoryRepository = &mongodb.CategoryRepository{}
+	bot.CategoryRepository.InitConn()
+
+	bot.TransactionRepository = &mongodb.TransactionRepository{}
+	bot.TransactionRepository.InitConn()
+
+	bot.CashRepository = &mongodb.CashRepository{}
+	bot.CashRepository.InitConn()
 
 	bot.Bot, err = tgbotapi.NewBotAPI(bot.Cfg.GetToken().String())
 	if err != nil {

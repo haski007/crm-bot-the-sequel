@@ -20,9 +20,26 @@ var MainMenu = tgbotapi.NewInlineKeyboardMarkup(
 
 var Settings = tgbotapi.NewInlineKeyboardMarkup(
 	tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData("Категории "+emoji.Pencil, "category"),
+		tgbotapi.NewInlineKeyboardButtonData("Категории "+emoji.Pencil, "category_settings"),
 	),
 	tgbotapi.NewInlineKeyboardRow(
 		tgbotapi.NewInlineKeyboardButtonData("Ревизия "+emoji.Page, "revision"),
+	),
+	tgbotapi.NewInlineKeyboardRow(
+		MainMenuButton,
+	),
+)
+
+var CategorySettings = tgbotapi.NewInlineKeyboardMarkup(
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData("Добавить "+emoji.Plus, "category_add"),
+		tgbotapi.NewInlineKeyboardButtonData("Изменить "+emoji.Pencil, "category_edit"),
+	),
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData("Удалить "+emoji.Basket, "category_remove"),
+		tgbotapi.NewInlineKeyboardButtonData("Посмотреть все "+emoji.Page, "category_get_all"),
+	),
+	tgbotapi.NewInlineKeyboardRow(
+		MainMenuButton,
 	),
 )

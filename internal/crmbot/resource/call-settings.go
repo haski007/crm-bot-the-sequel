@@ -8,9 +8,15 @@ import (
 
 func (bot *CrmBotService) callSettingsHandler(update tgbotapi.Update) {
 	chatID := update.CallbackQuery.Message.Chat.ID
+	messageID := update.CallbackQuery.Message.MessageID
 
-	answer := tgbotapi.NewMessage(chatID, emoji.Wrench+" *Settings* "+emoji.Gear)
+	answer := tgbotapi.NewEditMessageTextAndMarkup(
+		chatID,
+		messageID,
+		emoji.Wrench+" *Настройки* "+emoji.Gear,
+		keyboards.Settings)
 	answer.ParseMode = "MarkDown"
-	answer.ReplyMarkup = keyboards.Settings
 	bot.Bot.Send(answer)
+	//bot.Reply(chatID, fmt.Sprintln(messageID))
+
 }

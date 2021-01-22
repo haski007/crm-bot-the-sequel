@@ -19,22 +19,29 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 
 		if update.CallbackQuery != nil {
 			switch update.CallbackQuery.Data {
+			case "home":
+				go bot.callHomeHandler(update)
 			case "settings":
-				bot.callSettingsHandler(update)
-			case "category":
-				bot.callCategorySettingsHandler(update)
+				go bot.callSettingsHandler(update)
+
+				// ---> Categories
+			case "category_settings":
+				go bot.callCategorySettingsHandler(update)
+			case "category_add":
+				go bot.callCategoryAddHandler(update)
 			}
+			continue
 		}
 
 		if update.Message.IsCommand() {
 			switch update.Message.CommandWithAt() {
 			case "menu":
-				bot.commandMenuHandler(update)
+				go bot.commandMenuHandler(update)
 
 			case "test":
-				bot.commandTestHandler(update)
+				go bot.commandTestHandler(update)
 			default:
-				bot.Reply(update.Message.Chat.ID, "Such command does not exist! "+emoji.NoEntry)
+				go bot.Reply(update.Message.Chat.ID, "Such command does not exist! "+emoji.NoEntry)
 			}
 		}
 
