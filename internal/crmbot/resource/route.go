@@ -1,6 +1,8 @@
 package resource
 
 import (
+	"strings"
+
 	"github.com/Haski007/crm-bot-the-sequel/pkg/emoji"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
@@ -36,11 +38,14 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 		}
 
 		if update.Message.IsCommand() {
-			switch update.Message.CommandWithAt() {
-			case "menu":
+			command := update.Message.CommandWithAt()
+			switch {
+			case command == "menu":
 				go bot.commandMenuHandler(update)
+			case strings.Contains(command, "remove_category_"):
+				go bot.commandCategoryRemove(update)
 
-			case "test":
+			case command == "test":
 				go bot.commandTestHandler(update)
 			default:
 				go bot.Reply(update.Message.Chat.ID, "Such command does not exist! "+emoji.NoEntry)

@@ -27,6 +27,14 @@ func (r *CategoryRepository) FindAll(categories *[]*model.Category) error {
 	return r.Coll.Find(nil).All(categories)
 }
 
+func (r *CategoryRepository) RemoveByID(categoryID string) error {
+	if !r.isCategoryExists(categoryID) {
+		return repository.ErrDocDoesNotExist
+	}
+
+	return r.Coll.RemoveId(categoryID)
+}
+
 func (r *CategoryRepository) isCategoryExists(title string) bool {
 	query := bson.M{
 		"title": title,

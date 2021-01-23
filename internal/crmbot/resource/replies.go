@@ -19,7 +19,7 @@ func (bot *CrmBotService) Reply(chatID int64, message string) {
 }
 
 func (bot *CrmBotService) Errorf(chatID int64, format string, data ...interface{}) {
-	message := fmt.Sprintf(format+" "+emoji.Failed, data...)
+	message := fmt.Sprintf(emoji.Failed+" "+format+" "+emoji.Failed, data...)
 	answer := tgbotapi.NewMessage(chatID, message)
 	answer.ReplyMarkup = keyboards.MainMenu
 	answer.ParseMode = "MarkDown"
