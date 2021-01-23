@@ -41,7 +41,6 @@ func (bot *CrmBotService) hookCategoryAdd(update tgbotapi.Update) {
 
 	switch op.Step {
 	case 0:
-		// TODO: add validate if name is not empty
 		OpsQueue[userID].Data = model.Category{
 			ID:          uuid.New().String(),
 			Title:       update.Message.Text,
@@ -56,18 +55,22 @@ func (bot *CrmBotService) hookCategoryAdd(update tgbotapi.Update) {
 		var message string
 		if err := bot.CategoryRepository.Add(category); err != nil {
 			if err == repository.ErrDocAlreadyExists {
-				message = "Категория с таким именем уже существует! " + emoji.NoEntry
+				bot.Errorf(chatID,
+					"Категория с таким именем {\"%s\"} уже существует",
+					category.Title)
 			} else {
-				message = "Internal Server Error | write to @pdemian to get some help"
+				bot.Errorf(chatID,
+					"Internal Server Error | write to @pdemian to get some help")
 				bot.ReportToTheCreator(
 					fmt.Sprintf("[CategoryRepository.Add] category: %+v | err: %s", category, err))
 			}
 			delete(OpsQueue, userID)
 		} else {
 			message = "Категория успешно добавлена " + emoji.Check
+			answer := tgbotapi.NewMessage(chatID, message)
+			answer.ReplyMarkup = keyboards.MainMenu
+			bot.Bot.Send(answer)
 		}
-		answer := tgbotapi.NewMessage(chatID, message)
-		answer.ReplyMarkup = keyboards.MainMenu
-		bot.Bot.Send(answer)
+
 	}
 }
