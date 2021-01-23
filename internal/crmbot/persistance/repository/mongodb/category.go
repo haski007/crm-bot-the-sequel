@@ -23,6 +23,10 @@ func (r *CategoryRepository) Add(category model.Category) error {
 	return r.Coll.Insert(category)
 }
 
+func (r *CategoryRepository) FindAll(categories *[]*model.Category) error {
+	return r.Coll.Find(nil).All(categories)
+}
+
 func (r *CategoryRepository) isCategoryExists(title string) bool {
 	query := bson.M{
 		"title": title,

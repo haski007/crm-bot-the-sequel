@@ -24,11 +24,13 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 			case "settings":
 				go bot.callSettingsHandler(update)
 
-				// ---> Categories
+			// ---> Categories
 			case "category_settings":
 				go bot.callCategorySettingsHandler(update)
 			case "category_add":
-				bot.callCategoryAddHandler(update)
+				go bot.callCategoryAddHandler(update)
+			case "category_get_all":
+				go bot.callCategoryGetAllHandler(update)
 			}
 			continue
 		}
