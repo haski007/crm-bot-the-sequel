@@ -14,6 +14,7 @@ type CrmBotService struct {
 	Cfg                   *config.Bot
 	ProductRepository     *mongodb.ProductRepository
 	CategoryRepository    *mongodb.CategoryRepository
+	SupplierRepository    *mongodb.SupplierRepository
 	TransactionRepository *mongodb.TransactionRepository
 	CashRepository        *mongodb.CashRepository
 }
@@ -40,6 +41,9 @@ func NewCrmBotService() (*CrmBotService, error) {
 
 	bot.CategoryRepository = &mongodb.CategoryRepository{}
 	bot.CategoryRepository.InitConn()
+
+	bot.SupplierRepository = &mongodb.SupplierRepository{}
+	bot.SupplierRepository.InitConn()
 
 	bot.TransactionRepository = &mongodb.TransactionRepository{}
 	bot.TransactionRepository.InitConn()

@@ -27,12 +27,28 @@ func (r *CategoryRepository) FindAll(categories *[]*model.Category) error {
 	return r.Coll.Find(nil).All(categories)
 }
 
+func (r *CategoryRepository) FindByTitle(title string, category *model.Category) error {
+	if !r.isCategoryExists(title) {
+		return repository.ErrDocDoesNotExist
+	}
+
+	query := bson.M{
+		"title": title,
+	}
+
+	return r.Coll.Find(query).One(category)
+}
+
 func (r *CategoryRepository) RemoveByID(categoryID string) error {
-	if !r.isCategoryExists(categoryID) {
+	if !r.isIDCategoryExists(categoryID) {
 		return repository.ErrDocDoesNotExist
 	}
 
 	return r.Coll.RemoveId(categoryID)
+}
+
+func (r *CategoryRepository) DistinctCategories(categories *[]string) error {
+	return r.Coll.Find(nil).Distinct("title", categories)
 }
 
 func (r *CategoryRepository) isCategoryExists(title string) bool {
@@ -41,6 +57,13 @@ func (r *CategoryRepository) isCategoryExists(title string) bool {
 	}
 
 	if n, _ := r.Coll.Find(query).Count(); n > 0 {
+		return true
+	}
+	return false
+}
+
+func (r *CategoryRepository) isIDCategoryExists(categoryID string) bool {
+	if n, _ := r.Coll.FindId(categoryID).Count(); n > 0 {
 		return true
 	}
 	return false

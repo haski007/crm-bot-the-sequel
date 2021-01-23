@@ -4,6 +4,10 @@ import "time"
 
 type Money float64
 
+func NewMoney(input float64) Money {
+	return Money(input)
+}
+
 type TxType string
 
 const (

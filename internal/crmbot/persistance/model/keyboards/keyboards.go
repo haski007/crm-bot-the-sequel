@@ -23,6 +23,7 @@ var MainMenu = tgbotapi.NewInlineKeyboardMarkup(
 var Settings = tgbotapi.NewInlineKeyboardMarkup(
 	tgbotapi.NewInlineKeyboardRow(
 		tgbotapi.NewInlineKeyboardButtonData("Категории "+emoji.Pencil, "category_settings"),
+		tgbotapi.NewInlineKeyboardButtonData("Продукты "+emoji.Pencil, "product_settings"),
 	),
 	tgbotapi.NewInlineKeyboardRow(
 		tgbotapi.NewInlineKeyboardButtonData("Ревизия "+emoji.Page, "revision"),
@@ -32,10 +33,12 @@ var Settings = tgbotapi.NewInlineKeyboardMarkup(
 	),
 )
 
+// Categories
+
 var CategorySettings = tgbotapi.NewInlineKeyboardMarkup(
 	tgbotapi.NewInlineKeyboardRow(
 		tgbotapi.NewInlineKeyboardButtonData("Добавить "+emoji.Plus, "category_add"),
-		tgbotapi.NewInlineKeyboardButtonData("Изменить "+emoji.Pencil, "category_edit"),
+		//tgbotapi.NewInlineKeyboardButtonData("Изменить "+emoji.Pencil, "category_edit"),
 	),
 	tgbotapi.NewInlineKeyboardRow(
 		tgbotapi.NewInlineKeyboardButtonData("Удалить "+emoji.Basket, "category_remove"),
@@ -45,3 +48,38 @@ var CategorySettings = tgbotapi.NewInlineKeyboardMarkup(
 		MainMenuButton,
 	),
 )
+
+// Products
+
+var ProductSettings = tgbotapi.NewInlineKeyboardMarkup(
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData("Добавить "+emoji.Plus, "product_add"),
+		//tgbotapi.NewInlineKeyboardButtonData("Изменить "+emoji.Pencil, "product_edit"),
+	),
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData("Удалить "+emoji.Basket, "product_remove"),
+		tgbotapi.NewInlineKeyboardButtonData("Посмотреть все "+emoji.Page, "product_get_all"),
+	),
+	tgbotapi.NewInlineKeyboardRow(
+		MainMenuButton,
+	),
+)
+
+// Utils
+
+func MarkupByArray(array []string) tgbotapi.ReplyKeyboardMarkup {
+	countRows := len(array) / 3
+	if len(array) > 3 || countRows == 0 {
+		countRows++
+	}
+	rows := make([][]tgbotapi.KeyboardButton, countRows)
+	var x int
+	for i, c := range array {
+		if i%3 == 0 && i != 0 {
+			x++
+		}
+		rows[x] = append(rows[x], tgbotapi.NewKeyboardButton(c))
+	}
+	keyboard := tgbotapi.NewReplyKeyboard(rows...)
+	return keyboard
+}

@@ -4,6 +4,7 @@ type OperationType string
 
 const (
 	OperationType_CategoryAdd OperationType = "CategoryAdd"
+	OperationType_ProductAdd  OperationType = "ProductAdd"
 )
 
 type Operation struct {

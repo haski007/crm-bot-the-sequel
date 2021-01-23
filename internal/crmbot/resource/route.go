@@ -33,6 +33,14 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 				go bot.callCategoryAddHandler(update)
 			case "category_get_all":
 				go bot.callCategoryGetAllHandler(update)
+
+			// ---> Products
+			case "product_settings":
+				go bot.callProductSettingsHandler(update)
+			case "product_add":
+				go bot.callProductAddHandler(update)
+				//case "product_get_all":
+				//	go bot.callProductGetAllHandler(update)
 			}
 			continue
 		}
@@ -55,6 +63,8 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 				switch op.Name {
 				case OperationType_CategoryAdd:
 					go bot.hookCategoryAdd(update)
+				case OperationType_ProductAdd:
+					go bot.hookProductAdd(update)
 				}
 			}
 		}

@@ -14,6 +14,8 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
+// TODO: add enums for cases to add new category
+
 func (bot *CrmBotService) callCategoryAddHandler(update tgbotapi.Update) {
 	chatID := update.CallbackQuery.Message.Chat.ID
 	messageID := update.CallbackQuery.Message.MessageID
@@ -25,7 +27,6 @@ func (bot *CrmBotService) callCategoryAddHandler(update tgbotapi.Update) {
 		Step: 0,
 	}
 
-	//bot.Reply(chatID, fmt.Sprintln(userID))
 	delete := tgbotapi.NewDeleteMessage(chatID, messageID)
 	bot.Bot.Send(delete)
 
@@ -65,6 +66,7 @@ func (bot *CrmBotService) hookCategoryAdd(update tgbotapi.Update) {
 					fmt.Sprintf("[CategoryRepository.Add] category: %+v | err: %s", category, err))
 			}
 			delete(OpsQueue, userID)
+			return
 		} else {
 			message = "Категория успешно добавлена " + emoji.Check
 			answer := tgbotapi.NewMessage(chatID, message)
