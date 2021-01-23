@@ -15,8 +15,9 @@ func init() {
 		logrus.Fatalf("[env Parse] MongoCfg err: %s", err)
 	}
 
+	var err error
 	cfg.Addr = "mongodb://" + cfg.Username + ":" + cfg.Password + "@" + cfg.HostName + ":" + cfg.Port
-	session, err := mgo.Dial(cfg.Addr)
+	session, err = mgo.Dial(cfg.Addr)
 	if err != nil {
 		logrus.Fatalf("[mgo Dial] addr: %s | err: %s", cfg.Addr, err)
 	}
@@ -24,5 +25,4 @@ func init() {
 	if err = session.Ping(); err != nil {
 		logrus.Fatalf("[mgo Ping] addr: %s | err: %s", cfg.Addr, err)
 	}
-
 }

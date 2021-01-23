@@ -34,6 +34,7 @@ func NewCrmBotService() (*CrmBotService, error) {
 	/*
 	** ---> mongo Collection
 	 */
+
 	bot.ProductRepository = &mongodb.ProductRepository{}
 	bot.ProductRepository.InitConn()
 

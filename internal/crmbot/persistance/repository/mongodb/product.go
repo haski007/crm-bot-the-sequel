@@ -1,6 +1,8 @@
 package mongodb
 
-import "github.com/globalsign/mgo"
+import (
+	"github.com/globalsign/mgo"
+)
 
 type ProductRepository struct {
 	Coll *mgo.Collection

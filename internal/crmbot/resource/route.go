@@ -28,7 +28,7 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 			case "category_settings":
 				go bot.callCategorySettingsHandler(update)
 			case "category_add":
-				go bot.callCategoryAddHandler(update)
+				bot.callCategoryAddHandler(update)
 			}
 			continue
 		}
@@ -42,6 +42,13 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 				go bot.commandTestHandler(update)
 			default:
 				go bot.Reply(update.Message.Chat.ID, "Such command does not exist! "+emoji.NoEntry)
+			}
+		} else {
+			if op, ok := OpsQueue[update.Message.From.ID]; ok {
+				switch op.Name {
+				case OperationType_CategoryAdd:
+					go bot.hookCategoryAdd(update)
+				}
 			}
 		}
 
