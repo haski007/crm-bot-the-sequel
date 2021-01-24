@@ -23,8 +23,8 @@ func (r *SupplierRepository) Add(supplier model.Supplier) error {
 	return r.Coll.Insert(supplier)
 }
 
-func (r *SupplierRepository) DistinctNames(suppliers *[]string) error {
-	return r.Coll.Find(nil).Distinct("name", suppliers)
+func (r *SupplierRepository) FindAll(suppliers *[]*model.Supplier) error {
+	return r.Coll.Find(nil).All(suppliers)
 }
 
 func (r *SupplierRepository) FindByName(name string, supplier *model.Supplier) error {
@@ -39,6 +39,18 @@ func (r *SupplierRepository) FindByName(name string, supplier *model.Supplier) e
 	return r.Coll.Find(query).One(supplier)
 }
 
+func (r *SupplierRepository) DistinctNames(suppliers *[]string) error {
+	return r.Coll.Find(nil).Distinct("name", suppliers)
+}
+
+func (r *SupplierRepository) RemoveByID(suppplierID string) error {
+	if !r.isIDSupplierExists(suppplierID) {
+		return repository.ErrDocDoesNotExist
+	}
+
+	return r.Coll.RemoveId(suppplierID)
+}
+
 // Utils
 func (r *SupplierRepository) isSupplierExists(name string) bool {
 	query := bson.M{
@@ -46,6 +58,13 @@ func (r *SupplierRepository) isSupplierExists(name string) bool {
 	}
 
 	if n, _ := r.Coll.Find(query).Count(); n > 0 {
+		return true
+	}
+	return false
+}
+
+func (r *SupplierRepository) isIDSupplierExists(supplierID string) bool {
+	if n, _ := r.Coll.FindId(supplierID).Count(); n > 0 {
 		return true
 	}
 	return false
