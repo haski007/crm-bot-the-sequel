@@ -15,18 +15,18 @@ var MainMenu = tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardButtonData("Склад "+emoji.Package, "stock"),
 	),
 	tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData("Ревизия "+emoji.Page, "revision"),
+		tgbotapi.NewInlineKeyboardButtonData("Ревизия "+emoji.MagnifyingGlass, "revision"),
 		tgbotapi.NewInlineKeyboardButtonData("Касса "+emoji.MoneyFace, "cash"),
 	),
 )
 
 var Settings = tgbotapi.NewInlineKeyboardMarkup(
 	tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData("Категории "+emoji.Pencil, "category_settings"),
-		tgbotapi.NewInlineKeyboardButtonData("Продукты "+emoji.Pencil, "product_settings"),
+		tgbotapi.NewInlineKeyboardButtonData("Продукты "+emoji.Products, "product_settings"),
 	),
 	tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData("Поставщики "+emoji.Pencil, "supplier_settings"),
+		tgbotapi.NewInlineKeyboardButtonData("Категории "+emoji.Page, "category_settings"),
+		tgbotapi.NewInlineKeyboardButtonData("Поставщики "+emoji.Lorry, "supplier_settings"),
 	),
 	tgbotapi.NewInlineKeyboardRow(
 		MainMenuButton,
@@ -37,12 +37,11 @@ var Settings = tgbotapi.NewInlineKeyboardMarkup(
 
 var CategorySettings = tgbotapi.NewInlineKeyboardMarkup(
 	tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData("Добавить "+emoji.Plus, "category_add"),
-		//tgbotapi.NewInlineKeyboardButtonData("Изменить "+emoji.Pencil, "category_edit"),
+		tgbotapi.NewInlineKeyboardButtonData("Посмотреть все "+emoji.Page, "category_get_all"),
 	),
 	tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData("Удалить "+emoji.Basket, "category_remove"),
-		tgbotapi.NewInlineKeyboardButtonData("Посмотреть все "+emoji.Page, "category_get_all"),
+		tgbotapi.NewInlineKeyboardButtonData("Добавить "+emoji.Plus, "category_add"),
+		tgbotapi.NewInlineKeyboardButtonData("Изменить "+emoji.Pencil, "category_edit"),
 	),
 	tgbotapi.NewInlineKeyboardRow(
 		MainMenuButton,
@@ -53,12 +52,11 @@ var CategorySettings = tgbotapi.NewInlineKeyboardMarkup(
 
 var SupplierSettings = tgbotapi.NewInlineKeyboardMarkup(
 	tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData("Добавить "+emoji.Plus, "supplier_add"),
-		//tgbotapi.NewInlineKeyboardButtonData("Изменить "+emoji.Pencil, "supplier_edit"),
+		tgbotapi.NewInlineKeyboardButtonData("Посмотреть все "+emoji.Page, "supplier_get_all"),
 	),
 	tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData("Удалить "+emoji.Basket, "supplier_remove"),
-		tgbotapi.NewInlineKeyboardButtonData("Посмотреть все "+emoji.Page, "supplier_get_all"),
+		tgbotapi.NewInlineKeyboardButtonData("Добавить "+emoji.Plus, "supplier_add"),
+		tgbotapi.NewInlineKeyboardButtonData("Изменить "+emoji.Pencil, "supplier_edit"),
 	),
 	tgbotapi.NewInlineKeyboardRow(
 		MainMenuButton,
@@ -69,12 +67,11 @@ var SupplierSettings = tgbotapi.NewInlineKeyboardMarkup(
 
 var ProductSettings = tgbotapi.NewInlineKeyboardMarkup(
 	tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData("Добавить "+emoji.Plus, "product_add"),
-		//tgbotapi.NewInlineKeyboardButtonData("Изменить "+emoji.Pencil, "product_edit"),
+		tgbotapi.NewInlineKeyboardButtonData("Посмотреть все "+emoji.Page, "product_get_all"),
 	),
 	tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData("Удалить "+emoji.Basket, "product_remove"),
-		tgbotapi.NewInlineKeyboardButtonData("Посмотреть все "+emoji.Page, "product_get_all"),
+		tgbotapi.NewInlineKeyboardButtonData("Добавить "+emoji.Plus, "product_add"),
+		tgbotapi.NewInlineKeyboardButtonData("Изменить "+emoji.Pencil, "product_edit"),
 	),
 	tgbotapi.NewInlineKeyboardRow(
 		MainMenuButton,

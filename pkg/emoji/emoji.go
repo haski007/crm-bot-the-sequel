@@ -42,4 +42,7 @@ const (
 	Heart           = "\U00002764"
 	Failed          = "\U0000274C"
 	Page            = "\U0001F4C3"
+	Products        = "\U0001F371"
+	Lorry           = "\U0001F69B"
+	MagnifyingGlass = "\U0001F50D"
 )
