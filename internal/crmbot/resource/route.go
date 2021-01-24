@@ -8,17 +8,12 @@ import (
 )
 
 func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
-	//botCreds, err := bot.Bot.GetMe()
-	//if err != nil {
-	//	bot.ReportToTheCreator(
-	//		fmt.Sprintf("[bot GetMe] err: %s", err))
-	//	return
-	//}
 	for update := range updates {
 		if update.EditedMessage != nil {
 			continue
 		}
 
+		// ---> Callbacks of Inline Keyboard
 		if update.CallbackQuery != nil {
 			switch update.CallbackQuery.Data {
 			case "home":
@@ -34,6 +29,14 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 			case "category_get_all":
 				go bot.callCategoryGetAllHandler(update)
 
+			// ---> Suppliers
+			case "supplier_settings":
+				go bot.callSupplierSettingsHandler(update)
+			case "supplier_add":
+				go bot.callSupplierAddHandler(update)
+			//case "supplier_get_all":
+			//	go bot.callSupplierGetAllHandler(update)
+
 			// ---> Products
 			case "product_settings":
 				go bot.callProductSettingsHandler(update)
@@ -45,6 +48,7 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 			continue
 		}
 
+		// ---> Commands
 		if update.Message.IsCommand() {
 			command := update.Message.CommandWithAt()
 			switch {
@@ -58,11 +62,15 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 			default:
 				go bot.Reply(update.Message.Chat.ID, "Such command does not exist! "+emoji.NoEntry)
 			}
+
+			// ---> Hooks to process prompt
 		} else {
 			if op, ok := OpsQueue[update.Message.From.ID]; ok {
 				switch op.Name {
 				case OperationType_CategoryAdd:
 					go bot.hookCategoryAdd(update)
+				case OperationType_SupplierAdd:
+					go bot.hookSupplierAdd(update)
 				case OperationType_ProductAdd:
 					go bot.hookProductAdd(update)
 				}

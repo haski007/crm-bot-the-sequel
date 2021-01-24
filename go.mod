@@ -9,6 +9,7 @@ require (
 	github.com/google/uuid v1.1.5
 	github.com/joho/godotenv v1.3.0
 	github.com/sirupsen/logrus v1.7.0
+	github.com/stretchr/testify v1.2.2
 	github.com/technoweenie/multipartstreamer v1.0.1 // indirect
 	github.com/urfave/cli v1.22.5
 )

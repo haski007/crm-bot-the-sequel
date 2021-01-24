@@ -26,7 +26,7 @@ var Settings = tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardButtonData("Продукты "+emoji.Pencil, "product_settings"),
 	),
 	tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData("Ревизия "+emoji.Page, "revision"),
+		tgbotapi.NewInlineKeyboardButtonData("Поставщики "+emoji.Pencil, "supplier_settings"),
 	),
 	tgbotapi.NewInlineKeyboardRow(
 		MainMenuButton,
@@ -43,6 +43,22 @@ var CategorySettings = tgbotapi.NewInlineKeyboardMarkup(
 	tgbotapi.NewInlineKeyboardRow(
 		tgbotapi.NewInlineKeyboardButtonData("Удалить "+emoji.Basket, "category_remove"),
 		tgbotapi.NewInlineKeyboardButtonData("Посмотреть все "+emoji.Page, "category_get_all"),
+	),
+	tgbotapi.NewInlineKeyboardRow(
+		MainMenuButton,
+	),
+)
+
+// Suppliers
+
+var SupplierSettings = tgbotapi.NewInlineKeyboardMarkup(
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData("Добавить "+emoji.Plus, "supplier_add"),
+		//tgbotapi.NewInlineKeyboardButtonData("Изменить "+emoji.Pencil, "supplier_edit"),
+	),
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData("Удалить "+emoji.Basket, "supplier_remove"),
+		tgbotapi.NewInlineKeyboardButtonData("Посмотреть все "+emoji.Page, "supplier_get_all"),
 	),
 	tgbotapi.NewInlineKeyboardRow(
 		MainMenuButton,

@@ -71,6 +71,8 @@ func (bot *CrmBotService) hookCategoryAdd(update tgbotapi.Update) {
 			delete(OpsQueue, userID)
 			return
 		} else {
+			delete(OpsQueue, userID)
+
 			message = "Категория успешно добавлена " + emoji.Check
 			answer := tgbotapi.NewMessage(chatID, message)
 			answer.ReplyMarkup = keyboards.MainMenu

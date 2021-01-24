@@ -15,11 +15,19 @@ func (r *SupplierRepository) InitConn() {
 	r.Coll = session.DB(cfg.DBName).C("suppliers")
 }
 
+func (r *SupplierRepository) Add(supplier model.Supplier) error {
+	if r.isSupplierExists(supplier.Name) {
+		return repository.ErrDocAlreadyExists
+	}
+
+	return r.Coll.Insert(supplier)
+}
+
 func (r *SupplierRepository) DistinctNames(suppliers *[]string) error {
 	return r.Coll.Find(nil).Distinct("name", suppliers)
 }
 
-func (r *SupplierRepository) FindByName(name string, category *model.Supplier) error {
+func (r *SupplierRepository) FindByName(name string, supplier *model.Supplier) error {
 	if !r.isSupplierExists(name) {
 		return repository.ErrDocDoesNotExist
 	}
@@ -28,7 +36,7 @@ func (r *SupplierRepository) FindByName(name string, category *model.Supplier) e
 		"name": name,
 	}
 
-	return r.Coll.Find(query).One(category)
+	return r.Coll.Find(query).One(supplier)
 }
 
 // Utils

@@ -2,8 +2,15 @@ package resource
 
 type OperationType string
 
+type step int
+
+func (s step) Int() int {
+	return int(s)
+}
+
 const (
 	OperationType_CategoryAdd OperationType = "CategoryAdd"
+	OperationType_SupplierAdd OperationType = "SupplierAdd"
 	OperationType_ProductAdd  OperationType = "ProductAdd"
 )
 
