@@ -14,20 +14,14 @@ import (
 	"github.com/google/uuid"
 )
 
-type step int
-
-func (s step) Int() int {
-	return int(s)
-}
-
 const (
-	getTitle step = iota
-	getDescription
-	getPurchasingPrice
-	getBidPrice
-	getCategory
-	getSupplier
-	getUnit
+	getProductTitle step = iota
+	getProductDescription
+	getProductPurchasingPrice
+	getProductBidPrice
+	getProductCategory
+	getProductSupplier
+	getProductUnit
 )
 
 func (bot *CrmBotService) callProductAddHandler(update tgbotapi.Update) {
@@ -55,7 +49,7 @@ func (bot *CrmBotService) hookProductAdd(update tgbotapi.Update) {
 	op := OpsQueue[userID]
 
 	switch op.Step {
-	case getTitle.Int():
+	case getProductTitle.Int():
 		OpsQueue[userID].Data = model.Product{
 			ID:              uuid.New().String(),
 			Title:           update.Message.Text,
@@ -69,14 +63,14 @@ func (bot *CrmBotService) hookProductAdd(update tgbotapi.Update) {
 		}
 		OpsQueue[userID].Step++
 		bot.Reply(chatID, "Введите описание для продукта:")
-	case getDescription.Int():
+	case getProductDescription.Int():
 		product := OpsQueue[userID].Data.(model.Product)
 		product.Description = update.Message.Text
 		OpsQueue[userID].Data = product
 
 		OpsQueue[userID].Step++
 		bot.Reply(chatID, "Введите цену закупки:")
-	case getPurchasingPrice.Int():
+	case getProductPurchasingPrice.Int():
 		purchasingPrice, err := strconv.ParseFloat(update.Message.Text, 64)
 		if err != nil {
 			bot.Reply(chatID, "Неверный тип данных! "+emoji.NoEntry+"\n*Попробуйте ещё раз!*")
@@ -89,7 +83,7 @@ func (bot *CrmBotService) hookProductAdd(update tgbotapi.Update) {
 
 		OpsQueue[userID].Step++
 		bot.Reply(chatID, "Введите цену продажи:")
-	case getBidPrice.Int():
+	case getProductBidPrice.Int():
 		bitPrice, err := strconv.ParseFloat(update.Message.Text, 64)
 		if err != nil {
 			bot.Reply(chatID, "Неверный тип данных! "+emoji.NoEntry+"\n*Попробуйте ещё раз!*")
@@ -127,7 +121,7 @@ func (bot *CrmBotService) hookProductAdd(update tgbotapi.Update) {
 		}
 		answer.ReplyMarkup = keyboards.MarkupByArray(categories)
 		bot.Bot.Send(answer)
-	case getCategory.Int():
+	case getProductCategory.Int():
 		product := OpsQueue[userID].Data.(model.Product)
 		categoryTitle := update.Message.Text
 
@@ -169,12 +163,12 @@ func (bot *CrmBotService) hookProductAdd(update tgbotapi.Update) {
 			return
 		}
 
-		message := "Выберите категорию продукта:"
+		message := "Выберите поставщика продукта:"
 		answer := tgbotapi.NewMessage(chatID, message)
 		answer.ReplyMarkup = keyboards.MarkupByArray(suppliers)
 		bot.Bot.Send(answer)
 
-	case getSupplier.Int():
+	case getProductSupplier.Int():
 		supplierName := update.Message.Text
 
 		var supplier model.Supplier
@@ -203,7 +197,7 @@ func (bot *CrmBotService) hookProductAdd(update tgbotapi.Update) {
 			model.PieceUnit.String(),
 		})
 		bot.Bot.Send(answer)
-	case getUnit.Int():
+	case getProductUnit.Int():
 		input := update.Message.Text
 		var unit model.Unit
 		switch input {
@@ -219,7 +213,6 @@ func (bot *CrmBotService) hookProductAdd(update tgbotapi.Update) {
 		}
 
 		product := OpsQueue[userID].Data.(model.Product)
-		delete(OpsQueue, userID)
 		product.Unit = unit
 
 		if err := bot.ProductRepository.Add(product); err != nil {
@@ -236,13 +229,18 @@ func (bot *CrmBotService) hookProductAdd(update tgbotapi.Update) {
 			delete(OpsQueue, userID)
 			return
 		} else {
+			delete(OpsQueue, userID)
+
 			var answer tgbotapi.MessageConfig
 			message := "Продукт успешно добавлен " + emoji.Check
 			answer = tgbotapi.NewMessage(chatID, message)
 			answer.ReplyMarkup = tgbotapi.NewHideKeyboard(false)
-			m, _ := bot.Bot.Send(answer)
+			bot.Bot.Send(answer)
 
-			bot.Bot.Send(tgbotapi.NewEditMessageReplyMarkup(chatID, m.MessageID, keyboards.MainMenu))
+			answer = tgbotapi.NewMessage(chatID, emoji.House+" *Главное Меню*"+emoji.HouseWithGarden)
+			answer.ReplyMarkup = keyboards.MainMenu
+			answer.ParseMode = "Markdown"
+			bot.Bot.Send(answer)
 		}
 	}
 }
