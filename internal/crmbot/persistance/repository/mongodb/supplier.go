@@ -43,6 +43,14 @@ func (r *SupplierRepository) DistinctNames(suppliers *[]string) error {
 	return r.Coll.Find(nil).Distinct("name", suppliers)
 }
 
+func (r *SupplierRepository) FindByID(supplierID string, supplier *model.Supplier) error {
+	if !r.isIDSupplierExists(supplierID) {
+		return repository.ErrDocDoesNotExist
+	}
+
+	return r.Coll.FindId(supplierID).One(supplier)
+}
+
 func (r *SupplierRepository) RemoveByID(suppplierID string) error {
 	if !r.isIDSupplierExists(suppplierID) {
 		return repository.ErrDocDoesNotExist

@@ -10,28 +10,29 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func (bot *CrmBotService) commandSupplierRemove(update tgbotapi.Update) {
+func (bot *CrmBotService) commandProductRemove(update tgbotapi.Update) {
 	chatID := update.Message.Chat.ID
 
-	if len(update.Message.Text) < 18 {
+	if len(update.Message.Text) < len(update.Message.Text)-36 {
 		bot.Errorf(chatID, "Wrong type of command!")
 		return
 	}
-	supplierID := strings.ReplaceAll(update.Message.Text[len(update.Message.Text)-36:], "_", "-")
 
-	if err := bot.SupplierRepository.RemoveByID(supplierID); err != nil {
+	productID := strings.ReplaceAll(update.Message.Text[len(update.Message.Text)-36:], "_", "-")
+
+	if err := bot.ProductRepository.RemoveByID(productID); err != nil {
 		if err == repository.ErrDocDoesNotExist {
 			bot.Errorf(chatID,
-				"No supplier with such ID: \"%s\"", supplierID)
+				"No product with such ID: \"%s\"", productID)
 			return
 		}
 		bot.Errorf(chatID,
 			"Internal Server Error | write to @pdemian to get some help")
 		bot.ReportToTheCreator(
-			fmt.Sprintf("[SupplierRepository.RemoveByID] supplierID: {%s} | err: %s", supplierID, err))
+			fmt.Sprintf("[commandProductRemove] ProductRepository.RemoveByID | err: %s", err))
 	}
 
-	message := "Поставщик успешно удалён " + emoji.Basket
+	message := "Продукт успешно удалён " + emoji.Basket
 	answer := tgbotapi.NewMessage(chatID, message)
 	answer.ReplyMarkup = keyboards.MainMenu
 	answer.ParseMode = "MarkDown"

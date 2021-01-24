@@ -19,7 +19,7 @@ func (bot *CrmBotService) commandCategoryRemove(update tgbotapi.Update) {
 		bot.Errorf(chatID, "Wrong type of command!")
 		return
 	}
-	categoryID := strings.ReplaceAll(update.Message.Text[17:], "_", "-")
+	categoryID := strings.ReplaceAll(update.Message.Text[len(update.Message.Text)-36:], "_", "-")
 
 	if err := bot.CategoryRepository.RemoveByID(categoryID); err != nil {
 		if err == repository.ErrDocDoesNotExist {

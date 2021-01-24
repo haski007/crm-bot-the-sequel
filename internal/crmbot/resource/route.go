@@ -42,8 +42,8 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 				go bot.callProductSettingsHandler(update)
 			case "product_add":
 				go bot.callProductAddHandler(update)
-				//case "product_get_all":
-				//	go bot.callProductGetAllHandler(update)
+			case "product_get_all":
+				go bot.callProductGetAllHandler(update)
 			}
 			continue
 		}
@@ -58,6 +58,10 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 				go bot.commandCategoryRemove(update)
 			case strings.Contains(command, "remove_supplier_"):
 				go bot.commandSupplierRemove(update)
+			case strings.Contains(command, "remove_product_"):
+				go bot.commandProductRemove(update)
+			case strings.Contains(command, "show_product_"):
+				go bot.commandProductShow(update)
 
 			case command == "test":
 				go bot.commandTestHandler(update)
@@ -75,6 +79,8 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 					go bot.hookSupplierAdd(update)
 				case OperationType_ProductAdd:
 					go bot.hookProductAdd(update)
+				case OperationType_ProductGetByCategory:
+					go bot.hookProductGetByCategory(update)
 				}
 			}
 		}

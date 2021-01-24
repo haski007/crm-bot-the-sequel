@@ -12,6 +12,8 @@ const (
 	OperationType_CategoryAdd OperationType = "CategoryAdd"
 	OperationType_SupplierAdd OperationType = "SupplierAdd"
 	OperationType_ProductAdd  OperationType = "ProductAdd"
+
+	OperationType_ProductGetByCategory OperationType = "ProductGetByCategory"
 )
 
 type Operation struct {

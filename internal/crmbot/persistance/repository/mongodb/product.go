@@ -23,6 +23,33 @@ func (r *ProductRepository) Add(category model.Product) error {
 	return r.Coll.Insert(category)
 }
 
+func (r *ProductRepository) FindAll(products *[]*model.Product) error {
+	return r.Coll.Find(nil).All(products)
+}
+
+func (r *ProductRepository) FindByID(productID string, product *model.Product) error {
+	if !r.isIDProductExists(productID) {
+		return repository.ErrDocDoesNotExist
+	}
+
+	return r.Coll.FindId(productID).One(product)
+}
+
+func (r *ProductRepository) RemoveByID(productID string) error {
+	if !r.isIDProductExists(productID) {
+		return repository.ErrDocDoesNotExist
+	}
+
+	return r.Coll.RemoveId(productID)
+}
+
+func (r *ProductRepository) FindAllByCategoryID(categoryID string, products *[]*model.Product) error {
+	query := bson.M{
+		"category_id": categoryID,
+	}
+	return r.Coll.Find(query).All(products)
+}
+
 // Utils
 func (r *ProductRepository) isProductExists(title string) bool {
 	query := bson.M{
@@ -30,6 +57,13 @@ func (r *ProductRepository) isProductExists(title string) bool {
 	}
 
 	if n, _ := r.Coll.Find(query).Count(); n > 0 {
+		return true
+	}
+	return false
+}
+
+func (r *ProductRepository) isIDProductExists(productID string) bool {
+	if n, _ := r.Coll.FindId(productID).Count(); n > 0 {
 		return true
 	}
 	return false
