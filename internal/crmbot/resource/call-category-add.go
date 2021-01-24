@@ -14,7 +14,10 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-// TODO: add enums for cases to add new category
+const (
+	getCategoryTitle       step = iota
+	getCategoryDescription step = iota
+)
 
 func (bot *CrmBotService) callCategoryAddHandler(update tgbotapi.Update) {
 	chatID := update.CallbackQuery.Message.Chat.ID
@@ -41,7 +44,7 @@ func (bot *CrmBotService) hookCategoryAdd(update tgbotapi.Update) {
 	op := OpsQueue[userID]
 
 	switch op.Step {
-	case 0:
+	case getCategoryTitle.Int():
 		OpsQueue[userID].Data = model.Category{
 			ID:          uuid.New().String(),
 			Title:       update.Message.Text,
@@ -49,7 +52,7 @@ func (bot *CrmBotService) hookCategoryAdd(update tgbotapi.Update) {
 		}
 		OpsQueue[userID].Step++
 		bot.Reply(chatID, "Введите описание для категории:")
-	case 1:
+	case getCategoryDescription.Int():
 		category := OpsQueue[userID].Data.(model.Category)
 		category.Description = update.Message.Text
 
