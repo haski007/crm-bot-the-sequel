@@ -43,6 +43,22 @@ func (r *ProductRepository) RemoveByID(productID string) error {
 	return r.Coll.RemoveId(productID)
 }
 
+func (r *ProductRepository) RemoveAllByCategoryID(categoryID string) error {
+	query := bson.M{
+		"category_id": categoryID,
+	}
+	_, err := r.Coll.RemoveAll(query)
+	return err
+}
+
+func (r *ProductRepository) RemoveAllBySupplierID(supplierID string) error {
+	query := bson.M{
+		"supplier_id": supplierID,
+	}
+	_, err := r.Coll.RemoveAll(query)
+	return err
+}
+
 func (r *ProductRepository) FindAllByCategoryID(categoryID string, products *[]*model.Product) error {
 	query := bson.M{
 		"category_id": categoryID,

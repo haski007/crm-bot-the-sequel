@@ -21,6 +21,14 @@ func (bot *CrmBotService) commandCategoryRemove(update tgbotapi.Update) {
 	}
 	categoryID := strings.ReplaceAll(update.Message.Text[len(update.Message.Text)-36:], "_", "-")
 
+	if err := bot.ProductRepository.RemoveAllByCategoryID(categoryID); err != nil {
+		bot.Errorf(chatID,
+			"Internal Server Error | write to @pdemian to get some help")
+		bot.ReportToTheCreator(
+			fmt.Sprintf("[commandCategoryRemove] ProductRepository.RemoveAllByCategoryID | err: %s", err))
+		return
+	}
+
 	if err := bot.CategoryRepository.RemoveByID(categoryID); err != nil {
 		if err == repository.ErrDocDoesNotExist {
 			bot.Errorf(chatID,

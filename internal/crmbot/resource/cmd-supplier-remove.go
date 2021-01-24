@@ -19,6 +19,14 @@ func (bot *CrmBotService) commandSupplierRemove(update tgbotapi.Update) {
 	}
 	supplierID := strings.ReplaceAll(update.Message.Text[len(update.Message.Text)-36:], "_", "-")
 
+	if err := bot.ProductRepository.RemoveAllBySupplierID(supplierID); err != nil {
+		bot.Errorf(chatID,
+			"Internal Server Error | write to @pdemian to get some help")
+		bot.ReportToTheCreator(
+			fmt.Sprintf("[commandSupplierRemove] ProductRepository.RemoveAllBySupplierID | err: %s", err))
+		return
+	}
+
 	if err := bot.SupplierRepository.RemoveByID(supplierID); err != nil {
 		if err == repository.ErrDocDoesNotExist {
 			bot.Errorf(chatID,

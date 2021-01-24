@@ -34,7 +34,7 @@ func (bot *CrmBotService) callProductGetAllHandler(update tgbotapi.Update) {
 		answer.ReplyMarkup = tgbotapi.NewHideKeyboard(false)
 		bot.Bot.Send(answer)
 
-		bot.Errorf(chatID, "Нет поставщиков!")
+		bot.Errorf(chatID, "Нет категорий!")
 		return
 	}
 
