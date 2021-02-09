@@ -56,7 +56,7 @@ func (bot *CrmBotService) hookProductGetByCategory(update tgbotapi.Update) {
 
 	op := OpsQueue[userID]
 	switch op.Step {
-	case getProductCategory.Int():
+	case getProductCategory:
 
 		var category model.Category
 		if err := bot.CategoryRepository.FindByTitle(categoryTitle, &category); err != nil {

@@ -15,8 +15,8 @@ import (
 )
 
 const (
-	getCategoryTitle       step = iota
-	getCategoryDescription step = iota
+	getCategoryTitle Step = iota
+	getCategoryDescription
 )
 
 func (bot *CrmBotService) callCategoryAddHandler(update tgbotapi.Update) {
@@ -44,7 +44,7 @@ func (bot *CrmBotService) hookCategoryAdd(update tgbotapi.Update) {
 	op := OpsQueue[userID]
 
 	switch op.Step {
-	case getCategoryTitle.Int():
+	case getCategoryTitle:
 		OpsQueue[userID].Data = model.Category{
 			ID:          uuid.New().String(),
 			Title:       update.Message.Text,
@@ -52,7 +52,7 @@ func (bot *CrmBotService) hookCategoryAdd(update tgbotapi.Update) {
 		}
 		OpsQueue[userID].Step++
 		bot.Reply(chatID, "Введите описание для категории:")
-	case getCategoryDescription.Int():
+	case getCategoryDescription:
 		category := OpsQueue[userID].Data.(model.Category)
 		category.Description = update.Message.Text
 

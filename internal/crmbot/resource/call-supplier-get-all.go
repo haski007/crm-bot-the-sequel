@@ -32,12 +32,14 @@ func (bot *CrmBotService) callSupplierGetAllHandler(update tgbotapi.Update) {
 	var message string
 
 	for i, supplier := range suppliers {
-		message += fmt.Sprintf("Поставщик №%d\nФИО: *%s*\nНомер: *%s*\nОписание: \"%s\"\n/remove\\_supplier\\_%s\n------------------\n",
+		message += fmt.Sprintf("Поставщик №%d\nФИО: *%s*\nНомер: *%s*\nОписание: \"%s\"\n/remove\\_supplier\\_%s\n/edit\\_supplier\\_%s\n------------------\n",
 			i+1,
 			supplier.Name,
 			supplier.Phone,
 			supplier.Description,
-			strings.ReplaceAll(supplier.ID, "-", "\\_"))
+			strings.ReplaceAll(supplier.ID, "-", "\\_"),
+			strings.ReplaceAll(supplier.ID, "-", "\\_"),
+		)
 	}
 
 	answer := tgbotapi.NewEditMessageTextAndMarkup(

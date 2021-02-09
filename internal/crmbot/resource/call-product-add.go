@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	getProductTitle step = iota
+	getProductTitle Step = iota
 	getProductDescription
 	getProductPurchasingPrice
 	getProductBidPrice
@@ -49,7 +49,7 @@ func (bot *CrmBotService) hookProductAdd(update tgbotapi.Update) {
 	op := OpsQueue[userID]
 
 	switch op.Step {
-	case getProductTitle.Int():
+	case getProductTitle:
 		OpsQueue[userID].Data = model.Product{
 			ID:              uuid.New().String(),
 			Title:           update.Message.Text,
@@ -63,14 +63,14 @@ func (bot *CrmBotService) hookProductAdd(update tgbotapi.Update) {
 		}
 		OpsQueue[userID].Step++
 		bot.Reply(chatID, "Введите описание для продукта:")
-	case getProductDescription.Int():
+	case getProductDescription:
 		product := OpsQueue[userID].Data.(model.Product)
 		product.Description = update.Message.Text
 		OpsQueue[userID].Data = product
 
 		OpsQueue[userID].Step++
 		bot.Reply(chatID, "Введите цену закупки:")
-	case getProductPurchasingPrice.Int():
+	case getProductPurchasingPrice:
 		purchasingPrice, err := strconv.ParseFloat(update.Message.Text, 64)
 		if err != nil {
 			bot.Reply(chatID, "Неверный тип данных! "+emoji.NoEntry+"\n*Попробуйте ещё раз!*")
@@ -83,7 +83,7 @@ func (bot *CrmBotService) hookProductAdd(update tgbotapi.Update) {
 
 		OpsQueue[userID].Step++
 		bot.Reply(chatID, "Введите цену продажи:")
-	case getProductBidPrice.Int():
+	case getProductBidPrice:
 		bitPrice, err := strconv.ParseFloat(update.Message.Text, 64)
 		if err != nil {
 			bot.Reply(chatID, "Неверный тип данных! "+emoji.NoEntry+"\n*Попробуйте ещё раз!*")
@@ -121,7 +121,7 @@ func (bot *CrmBotService) hookProductAdd(update tgbotapi.Update) {
 		}
 		answer.ReplyMarkup = keyboards.MarkupByArray(categories)
 		bot.Bot.Send(answer)
-	case getProductCategory.Int():
+	case getProductCategory:
 		product := OpsQueue[userID].Data.(model.Product)
 		categoryTitle := update.Message.Text
 
@@ -168,7 +168,7 @@ func (bot *CrmBotService) hookProductAdd(update tgbotapi.Update) {
 		answer.ReplyMarkup = keyboards.MarkupByArray(suppliers)
 		bot.Bot.Send(answer)
 
-	case getProductSupplier.Int():
+	case getProductSupplier:
 		supplierName := update.Message.Text
 
 		var supplier model.Supplier
@@ -197,7 +197,7 @@ func (bot *CrmBotService) hookProductAdd(update tgbotapi.Update) {
 			model.PieceUnit.String(),
 		})
 		bot.Bot.Send(answer)
-	case getProductUnit.Int():
+	case getProductUnit:
 		input := update.Message.Text
 		var unit model.Unit
 		switch input {

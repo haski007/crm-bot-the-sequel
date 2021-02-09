@@ -9,16 +9,19 @@ func (s step) Int() int {
 }
 
 const (
-	OperationType_CategoryAdd OperationType = "CategoryAdd"
-	OperationType_SupplierAdd OperationType = "SupplierAdd"
-	OperationType_ProductAdd  OperationType = "ProductAdd"
+	OperationType_CategoryAdd  OperationType = "CategoryAdd"
+	OperationType_SupplierAdd  OperationType = "SupplierAdd"
+	OperationType_SupplierEdit OperationType = "SupplierEdit"
+	OperationType_ProductAdd   OperationType = "ProductAdd"
 
 	OperationType_ProductGetByCategory OperationType = "ProductGetByCategory"
 )
 
+type Step int
+
 type Operation struct {
 	Name OperationType
-	Step int
+	Step Step
 	Data interface{}
 }
 

@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	getSupplierName step = iota
+	getSupplierName Step = iota
 	getSupplierDescription
 	getSupplierPhone
 )
@@ -45,7 +45,7 @@ func (bot *CrmBotService) hookSupplierAdd(update tgbotapi.Update) {
 	op := OpsQueue[userID]
 
 	switch op.Step {
-	case getSupplierName.Int():
+	case getSupplierName:
 		OpsQueue[userID].Data = model.Supplier{
 			ID:          uuid.New().String(),
 			Name:        strings.TrimSpace(update.Message.Text),
@@ -54,14 +54,14 @@ func (bot *CrmBotService) hookSupplierAdd(update tgbotapi.Update) {
 		}
 		OpsQueue[userID].Step++
 		bot.Reply(chatID, "Введите описание поставщика:")
-	case getSupplierDescription.Int():
+	case getSupplierDescription:
 		supplier := OpsQueue[userID].Data.(model.Supplier)
 		supplier.Description = strings.TrimSpace(update.Message.Text)
 		OpsQueue[userID].Data = supplier
 
 		OpsQueue[userID].Step++
 		bot.Reply(chatID, "Введите номер телефона поставщика:")
-	case getSupplierPhone.Int():
+	case getSupplierPhone:
 		input := strings.TrimSpace(update.Message.Text)
 
 		phone := validate.PhoneNumber(input)

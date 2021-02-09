@@ -59,6 +59,20 @@ func (r *SupplierRepository) RemoveByID(suppplierID string) error {
 	return r.Coll.RemoveId(suppplierID)
 }
 
+func (r *SupplierRepository) UpdateField(supplierID, field string, value interface{}) error {
+	if !r.isIDSupplierExists(supplierID) {
+		return repository.ErrDocDoesNotExist
+	}
+
+	query := bson.M{
+		"$set": bson.M{
+			field: value,
+		},
+	}
+
+	return r.Coll.UpdateId(supplierID, query)
+}
+
 // Utils
 func (r *SupplierRepository) isSupplierExists(name string) bool {
 	query := bson.M{

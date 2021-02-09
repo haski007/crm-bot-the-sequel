@@ -58,6 +58,8 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 				go bot.commandCategoryRemove(update)
 			case strings.Contains(command, "remove_supplier_"):
 				go bot.commandSupplierRemove(update)
+			case strings.Contains(command, "edit_supplier_"):
+				go bot.commandSupplierEditHandler(update)
 			case strings.Contains(command, "remove_product_"):
 				go bot.commandProductRemove(update)
 			case strings.Contains(command, "show_product_"):
@@ -77,6 +79,8 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 					go bot.hookCategoryAdd(update)
 				case OperationType_SupplierAdd:
 					go bot.hookSupplierAdd(update)
+				case OperationType_SupplierEdit:
+					go bot.hookSupplierEdit(update)
 				case OperationType_ProductAdd:
 					go bot.hookProductAdd(update)
 				case OperationType_ProductGetByCategory:
