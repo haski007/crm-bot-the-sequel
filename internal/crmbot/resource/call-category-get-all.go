@@ -32,11 +32,13 @@ func (bot *CrmBotService) callCategoryGetAllHandler(update tgbotapi.Update) {
 	var message string
 
 	for i, category := range categories {
-		message += fmt.Sprintf("Категория №%d\nНазвание: *%s*\nОписание: \"%s\"\n/remove\\_category\\_%s\n------------------\n",
+		message += fmt.Sprintf("Категория №%d\nНазвание: *%s*\nОписание: \"%s\"\n/remove\\_category\\_%s\n/edit\\_category\\_%s\n------------------\n",
 			i+1,
 			category.Title,
 			category.Description,
-			strings.ReplaceAll(category.ID, "-", "\\_"))
+			strings.ReplaceAll(category.ID, "-", "\\_"),
+			strings.ReplaceAll(category.ID, "-", "\\_"),
+		)
 	}
 
 	answer := tgbotapi.NewEditMessageTextAndMarkup(

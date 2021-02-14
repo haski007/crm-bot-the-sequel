@@ -10,6 +10,7 @@ func (s step) Int() int {
 
 const (
 	OperationType_CategoryAdd  OperationType = "CategoryAdd"
+	OperationType_CategoryEdit OperationType = "CategoryEdit"
 	OperationType_SupplierAdd  OperationType = "SupplierAdd"
 	OperationType_SupplierEdit OperationType = "SupplierEdit"
 	OperationType_ProductAdd   OperationType = "ProductAdd"

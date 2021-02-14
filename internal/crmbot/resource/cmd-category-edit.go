@@ -8,17 +8,16 @@ import (
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model/keyboards"
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/repository"
 	"github.com/Haski007/crm-bot-the-sequel/pkg/emoji"
-	"github.com/Haski007/crm-bot-the-sequel/pkg/validate"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 const (
-	getSupplierFieldToEdit Step = iota
-	getSupplierValueToEdit
+	getCategoryFieldToEdit Step = iota
+	getCategoryValueToEdit
 )
 
-func (bot *CrmBotService) commandSupplierEditHandler(update tgbotapi.Update) {
+func (bot *CrmBotService) commandCategoryEditHandler(update tgbotapi.Update) {
 	chatID := update.Message.Chat.ID
 	userID := update.Message.From.ID
 
@@ -26,49 +25,49 @@ func (bot *CrmBotService) commandSupplierEditHandler(update tgbotapi.Update) {
 		bot.Errorf(chatID, "Wrong type of command!")
 		return
 	}
-	supplierID := strings.ReplaceAll(update.Message.Text[len(update.Message.Text)-36:], "_", "-")
+	categoryID := strings.ReplaceAll(update.Message.Text[len(update.Message.Text)-36:], "_", "-")
 
 	OpsQueue[userID] = &Operation{
-		Name: OperationType_SupplierEdit,
+		Name: OperationType_CategoryEdit,
 		Step: 0,
-		Data: model.SupplierEdit{
-			ID:    supplierID,
+		Data: model.CategoryEdit{
+			ID:    categoryID,
 			Field: "",
 		},
 	}
 	message := "Что нужно изменить " + emoji.QuestionMark
 	answer := tgbotapi.NewMessage(chatID, message)
 	answer.ReplyMarkup = keyboards.MarkupByArray([]string{
-		model.SupplierEditName.String(),
-		model.SupplierEditPhone.String(),
-		model.SupplierEditDescription.String(),
+		model.CategoryEditTitle.String(),
+		model.CategoryEditDescription.String(),
 	})
 	answer.ParseMode = "MarkDown"
 	bot.Bot.Send(answer)
 }
 
-func (bot *CrmBotService) hookSupplierEdit(update tgbotapi.Update) {
+func (bot *CrmBotService) hookCategoryEdit(update tgbotapi.Update) {
 	chatID := update.Message.Chat.ID
 	userID := update.Message.From.ID
 
 	op := OpsQueue[userID]
 	switch op.Step {
-	case getSupplierFieldToEdit:
-		field, err := model.NewSupplierEditField(update.Message.Text)
+	case getCategoryFieldToEdit:
+		field, err := model.NewCategoryEditField(update.Message.Text)
 		if err != nil {
-			if err == model.ErrNoSuchSupplierEditField {
+			if err == model.ErrNoSuchCategoryEditField {
 				bot.Reply(chatID, "Такого поля нет! "+emoji.NoEntry+"\nПопробуй ещё раз")
 				return
 			}
-			bot.ReportToTheCreator(fmt.Sprintf("[hookSupplierEdit] NewSupplierEditField | err: %s", err))
+			bot.ReportToTheCreator(fmt.Sprintf("[hookCategoryEdit] NewCategoryEditField | err: %s", err))
 			bot.Errorf(chatID,
 				"Internal Server Error | write to @pdemian to get some help")
+			delete(OpsQueue, userID)
 			return
 		}
 
-		supEdit := OpsQueue[userID].Data.(model.SupplierEdit)
-		supEdit.Field = field
-		OpsQueue[userID].Data = supEdit
+		categoryEdit := OpsQueue[userID].Data.(model.CategoryEdit)
+		categoryEdit.Field = field
+		OpsQueue[userID].Data = categoryEdit
 		OpsQueue[userID].Step++
 
 		var answer tgbotapi.MessageConfig
@@ -77,27 +76,20 @@ func (bot *CrmBotService) hookSupplierEdit(update tgbotapi.Update) {
 		answer.ReplyMarkup = tgbotapi.NewHideKeyboard(false)
 		bot.Bot.Send(answer)
 
-	case getSupplierValueToEdit:
-		supEdit := OpsQueue[userID].Data.(model.SupplierEdit)
+	case getCategoryValueToEdit:
+		categoryEdit := OpsQueue[userID].Data.(model.CategoryEdit)
 		value := update.Message.Text
 
-		if supEdit.Field == model.SupplierEditPhone {
-			value = validate.PhoneNumber(value)
-			if value == "" {
-				bot.Reply(chatID, "Неверный формат номера телефона "+emoji.NoEntry+"\nПопробуй ещё раз")
-				return
-			}
-		}
-
-		if err := bot.SupplierRepository.UpdateField(supEdit.ID,
-			supEdit.Field.BsonField(),
+		if err := bot.CategoryRepository.UpdateField(
+			categoryEdit.ID,
+			categoryEdit.Field.BsonField(),
 			value,
 		); err != nil {
 			if err == repository.ErrDocDoesNotExist {
-				bot.Errorf(chatID, "Такого поставщика не существует")
+				bot.Errorf(chatID, "Такой категории не существует")
 				return
 			}
-			bot.ReportToTheCreator(fmt.Sprintf("[hookSupplierEdit] NewSupplierEditField | err: %s", err))
+			bot.ReportToTheCreator(fmt.Sprintf("[hookCategoryEdit] NewCategoryEditField | err: %s", err))
 			bot.Errorf(chatID,
 				"Internal Server Error | write to @pdemian to get some help")
 			delete(OpsQueue, userID)
@@ -105,7 +97,7 @@ func (bot *CrmBotService) hookSupplierEdit(update tgbotapi.Update) {
 		}
 
 		delete(OpsQueue, userID)
-		message := "Поставщик успешно изменён " + emoji.Check
+		message := "Категория успешно изменёна " + emoji.Check
 		answer := tgbotapi.NewMessage(chatID, message)
 		answer.ReplyMarkup = keyboards.MainMenu
 		bot.Bot.Send(answer)

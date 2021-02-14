@@ -59,6 +59,20 @@ func (r *CategoryRepository) DistinctCategories(categories *[]string) error {
 	return r.Coll.Find(nil).Distinct("title", categories)
 }
 
+func (r *CategoryRepository) UpdateField(categoryID, field string, value interface{}) error {
+	if !r.isIDCategoryExists(categoryID) {
+		return repository.ErrDocDoesNotExist
+	}
+
+	query := bson.M{
+		"$set": bson.M{
+			field: value,
+		},
+	}
+
+	return r.Coll.UpdateId(categoryID, query)
+}
+
 // Utils
 func (r *CategoryRepository) isCategoryExists(title string) bool {
 	query := bson.M{
