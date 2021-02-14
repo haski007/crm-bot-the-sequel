@@ -2,18 +2,16 @@ package resource
 
 import (
 	"fmt"
-	"strings"
-
-	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/repository"
-	"github.com/Haski007/crm-bot-the-sequel/pkg/emoji"
 
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model"
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model/keyboards"
+	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/repository"
+	"github.com/Haski007/crm-bot-the-sequel/pkg/emoji"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func (bot *CrmBotService) callProductGetAllHandler(update tgbotapi.Update) {
+func (bot *CrmBotService) callQuantityAllHandler(update tgbotapi.Update) {
 	chatID := update.CallbackQuery.Message.Chat.ID
 	userID := update.CallbackQuery.From.ID
 
@@ -22,7 +20,7 @@ func (bot *CrmBotService) callProductGetAllHandler(update tgbotapi.Update) {
 	var categories []string
 
 	if err := bot.CategoryRepository.DistinctCategories(&categories); err != nil {
-		bot.ReportToTheCreator(fmt.Sprintf("[callProductGetAllHandler] DistinctCategories | err: %s", err))
+		bot.ReportToTheCreator(fmt.Sprintf("[callQuantitySet] DistinctCategories | err: %s", err))
 		bot.Errorf(chatID,
 			"Internal Server Error | write to @pdemian to get some help")
 		return
@@ -39,8 +37,8 @@ func (bot *CrmBotService) callProductGetAllHandler(update tgbotapi.Update) {
 	}
 
 	OpsQueue[userID] = &Operation{
-		Name: OperationType_ProductGetByCategory,
-		Step: 4,
+		Name: OperationType_QuantityAll,
+		Step: getProductCategory,
 		Data: nil,
 	}
 
@@ -49,11 +47,12 @@ func (bot *CrmBotService) callProductGetAllHandler(update tgbotapi.Update) {
 	bot.Bot.Send(answer)
 }
 
-func (bot *CrmBotService) hookProductGetByCategory(update tgbotapi.Update) {
+func (bot *CrmBotService) hookQuantityAll(update tgbotapi.Update) {
 	chatID := update.Message.Chat.ID
 	userID := update.Message.From.ID
 
 	op := OpsQueue[userID]
+
 	switch op.Step {
 	case getProductCategory:
 		categoryTitle := update.Message.Text
@@ -64,7 +63,7 @@ func (bot *CrmBotService) hookProductGetByCategory(update tgbotapi.Update) {
 				bot.Errorf(chatID, "Категории \"%s\" не существует! %s", categoryTitle, emoji.NoEntry)
 				return
 			}
-			bot.ReportToTheCreator(fmt.Sprintf("[hookProductGetByCategory] CategoryRepository.FindByTitle err: %s", err))
+			bot.ReportToTheCreator(fmt.Sprintf("[hookQuantitySet] CategoryRepository.FindByTitle err: %s", err))
 			bot.Errorf(chatID,
 				"Internal Server Error | write to @pdemian to get some help")
 			delete(OpsQueue, userID)
@@ -73,7 +72,7 @@ func (bot *CrmBotService) hookProductGetByCategory(update tgbotapi.Update) {
 
 		var products []*model.Product
 		if err := bot.ProductRepository.FindAllByCategoryID(category.ID, &products); err != nil {
-			bot.ReportToTheCreator(fmt.Sprintf("[hookProductGetByCategory] ProductRepository.FindAllByCategoryID | err: %s", err))
+			bot.ReportToTheCreator(fmt.Sprintf("[hookQuantitySet] ProductRepository.FindAllByCategoryID | err: %s", err))
 			bot.Errorf(chatID,
 				"Internal Server Error | write to @pdemian to get some help")
 			return
@@ -87,13 +86,16 @@ func (bot *CrmBotService) hookProductGetByCategory(update tgbotapi.Update) {
 		}
 		delete(OpsQueue, userID)
 
-		message := fmt.Sprintf(emoji.Eye+" Продукты категории: *%s*"+emoji.Eye+"\n", category.Title)
-
+		var message string
 		for i, product := range products {
-			message += fmt.Sprintf("Продукт №%d\nНазвание: *%s*\n/show\\_product\\_%s\n------------------\n",
+			message += fmt.Sprintf("%d) *%s* (%s) | *%d* | %.2f/%.2f\n",
 				i+1,
 				product.Title,
-				strings.ReplaceAll(product.ID, "-", "\\_"))
+				categoryTitle,
+				product.Quantity,
+				product.PurchasingPrice,
+				product.BidPrice,
+			)
 		}
 
 		var answer tgbotapi.MessageConfig

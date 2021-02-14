@@ -10,8 +10,9 @@ import (
 )
 
 type CrmBotService struct {
-	Bot                   *tgbotapi.BotAPI
-	Cfg                   *config.Bot
+	Bot *tgbotapi.BotAPI
+	Cfg *config.Bot
+
 	ProductRepository     *mongodb.ProductRepository
 	CategoryRepository    *mongodb.CategoryRepository
 	SupplierRepository    *mongodb.SupplierRepository

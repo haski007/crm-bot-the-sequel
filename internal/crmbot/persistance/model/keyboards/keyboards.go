@@ -69,6 +69,20 @@ var ProductSettings = tgbotapi.NewInlineKeyboardMarkup(
 	),
 )
 
+// Stock
+var Stock = tgbotapi.NewInlineKeyboardMarkup(
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData("Посмотреть всё "+emoji.Page, "quantity_all"),
+	),
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData("Пополнить продукт "+emoji.Plus, "quantity_add"),
+		tgbotapi.NewInlineKeyboardButtonData("Задать количество "+emoji.Pencil, "quantity_set"),
+	),
+	tgbotapi.NewInlineKeyboardRow(
+		MainMenuButton,
+	),
+)
+
 // Utils
 
 func MarkupByArray(array []string) tgbotapi.ReplyKeyboardMarkup {

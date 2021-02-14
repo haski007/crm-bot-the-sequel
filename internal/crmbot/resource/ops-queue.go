@@ -18,6 +18,10 @@ const (
 	OperationType_ProductAdd  OperationType = "ProductAdd"
 	OperationType_ProductEdit OperationType = "ProductEdit"
 
+	OperationType_QuantityAdd OperationType = "QuantityAdd"
+	OperationType_QuantitySet OperationType = "QuantitySet"
+	OperationType_QuantityAll OperationType = "QuantityAll"
+
 	OperationType_ProductGetByCategory OperationType = "ProductGetByCategory"
 )
 

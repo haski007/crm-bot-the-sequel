@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/Haski007/crm-bot-the-sequel/pkg/emoji"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
@@ -44,7 +45,18 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 				go bot.callProductAddHandler(update)
 			case "product_get_all":
 				go bot.callProductGetAllHandler(update)
+
+			// ---> Stock
+			case "stock":
+				go bot.callStockHandler(update)
+			case "quantity_set":
+				go bot.callQuantitySetHandler(update)
+			case "quantity_add":
+				go bot.callQuantityAddHandler(update)
+			case "quantity_all":
+				go bot.callQuantityAllHandler(update)
 			}
+
 			continue
 		}
 
@@ -93,6 +105,13 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 					go bot.hookProductEdit(update)
 				case OperationType_ProductGetByCategory:
 					go bot.hookProductGetByCategory(update)
+
+				case OperationType_QuantityAdd:
+					go bot.hookQuantityAdd(update)
+				case OperationType_QuantitySet:
+					go bot.hookQuantitySet(update)
+				case OperationType_QuantityAll:
+					go bot.hookQuantityAll(update)
 				}
 			}
 		}

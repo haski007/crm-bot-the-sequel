@@ -18,7 +18,7 @@ func (r *ProductRepository) InitConn() {
 }
 
 func (r *ProductRepository) Add(category model.Product) error {
-	if r.isProductExists(category.Title) {
+	if r.IsProductExists(category.Title) {
 		return repository.ErrDocAlreadyExists
 	}
 
@@ -89,10 +89,89 @@ func (r *ProductRepository) UpdateField(productID, field string, input interface
 	return r.Coll.UpdateId(productID, query)
 }
 
-// Utils
-func (r *ProductRepository) isProductExists(title string) bool {
+func (r *ProductRepository) UpdateFieldByTitle(productTitle, field string, input interface{}) error {
+	queryFind := bson.M{
+		"title": productTitle,
+	}
+
+	queryUpdate := bson.M{
+		"$set": bson.M{
+			field: input,
+		},
+	}
+
+	return r.Coll.Update(queryFind, queryUpdate)
+}
+
+func (r *ProductRepository) AddQuantity(productTitle string, input interface{}) error {
+	queryFind := bson.M{
+		"title": productTitle,
+	}
+
+	queryUpdate := bson.M{
+		"$inc": bson.M{
+			"quantity": input,
+		},
+	}
+
+	return r.Coll.Update(queryFind, queryUpdate)
+}
+
+func (r *ProductRepository) FindProductByTitle(title string, product *model.Product) error {
+	if !r.IsProductExists(title) {
+		return repository.ErrDocDoesNotExist
+	}
+
 	query := bson.M{
 		"title": title,
+	}
+
+	return r.Coll.Find(query).One(product)
+}
+
+func (r *ProductRepository) GetFieldSum(field string) (float64, error) {
+
+	var quantities []float64
+
+	if err := r.Coll.Find(nil).Distinct(field, &quantities); err != nil {
+		return 0, err
+	}
+
+	var total float64
+	for _, v := range quantities {
+		total += v
+	}
+
+	return total, nil
+}
+
+func (r *ProductRepository) FindTitlesByCategoryID(categoryID string, products *[]string) error {
+	if !r.isProductExistsInCategory(categoryID) {
+		return repository.ErrDocDoesNotExist
+	}
+
+	query := bson.M{
+		"category_id": categoryID,
+	}
+
+	return r.Coll.Find(query).Distinct("title", products)
+}
+
+// Utils
+func (r *ProductRepository) IsProductExists(title string) bool {
+	query := bson.M{
+		"title": title,
+	}
+
+	if n, _ := r.Coll.Find(query).Count(); n > 0 {
+		return true
+	}
+	return false
+}
+
+func (r *ProductRepository) isProductExistsInCategory(categoryID string) bool {
+	query := bson.M{
+		"category_id": categoryID,
 	}
 
 	if n, _ := r.Coll.Find(query).Count(); n > 0 {
