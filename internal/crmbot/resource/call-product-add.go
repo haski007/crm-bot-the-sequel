@@ -84,14 +84,14 @@ func (bot *CrmBotService) hookProductAdd(update tgbotapi.Update) {
 		OpsQueue[userID].Step++
 		bot.Reply(chatID, "Введите цену продажи:")
 	case getProductBidPrice:
-		bitPrice, err := strconv.ParseFloat(update.Message.Text, 64)
+		bidPrice, err := strconv.ParseFloat(update.Message.Text, 64)
 		if err != nil {
 			bot.Reply(chatID, "Неверный тип данных! "+emoji.NoEntry+"\n*Попробуйте ещё раз!*")
 			return
 		}
 
 		product := OpsQueue[userID].Data.(model.Product)
-		product.BidPrice = model.NewMoney(bitPrice)
+		product.BidPrice = model.NewMoney(bidPrice)
 		OpsQueue[userID].Data = product
 
 		OpsQueue[userID].Step++
@@ -198,16 +198,8 @@ func (bot *CrmBotService) hookProductAdd(update tgbotapi.Update) {
 		})
 		bot.Bot.Send(answer)
 	case getProductUnit:
-		input := update.Message.Text
-		var unit model.Unit
-		switch input {
-		case model.PieceUnit.String():
-			unit = model.PieceUnit
-		case model.LiterUnit.String():
-			unit = model.LiterUnit
-		case model.GramUnit.String():
-			unit = model.GramUnit
-		default:
+		unit, err := model.NewUnit(update.Message.Text)
+		if err != nil {
 			bot.Reply(chatID, "Неверная единица измерения! "+emoji.NoEntry+"\nПопробуй ещё раз")
 			return
 		}

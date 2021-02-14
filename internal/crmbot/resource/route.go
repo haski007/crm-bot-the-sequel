@@ -66,9 +66,11 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 				go bot.commandProductRemove(update)
 			case strings.Contains(command, "show_product_"):
 				go bot.commandProductShow(update)
-
+			case strings.Contains(command, "edit_product_"):
+				go bot.commandProductEditHandler(update)
 			case command == "test":
 				go bot.commandTestHandler(update)
+
 			default:
 				go bot.Reply(update.Message.Chat.ID, "Such command does not exist! "+emoji.NoEntry)
 			}
@@ -87,6 +89,8 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 					go bot.hookSupplierEdit(update)
 				case OperationType_ProductAdd:
 					go bot.hookProductAdd(update)
+				case OperationType_ProductEdit:
+					go bot.hookProductEdit(update)
 				case OperationType_ProductGetByCategory:
 					go bot.hookProductGetByCategory(update)
 				}

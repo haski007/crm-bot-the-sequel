@@ -68,7 +68,8 @@ func (bot *CrmBotService) commandProductShow(update tgbotapi.Update) {
 		"Категория: *%s*\n"+
 		"Поставщик: *%s*\n"+
 		"Описание: *%s*\n"+
-		"/remove\\_product\\_%s\n",
+		"/remove\\_product\\_%s\n"+
+		"/edit\\_product\\_%s\n",
 		product.Title,
 		product.PurchasingPrice,
 		product.BidPrice,
@@ -77,7 +78,9 @@ func (bot *CrmBotService) commandProductShow(update tgbotapi.Update) {
 		category.Title,
 		supplier.Name,
 		product.Description,
-		strings.ReplaceAll(product.ID, "-", "\\_"))
+		strings.ReplaceAll(product.ID, "-", "\\_"),
+		strings.ReplaceAll(product.ID, "-", "\\_"),
+	)
 	answer := tgbotapi.NewMessage(chatID, message)
 	answer.ParseMode = "MarkDown"
 	answer.ReplyMarkup = keyboards.MainMenu

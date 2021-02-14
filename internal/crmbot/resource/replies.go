@@ -11,6 +11,7 @@ import (
 
 func (bot *CrmBotService) Reply(chatID int64, message string) {
 	resp := tgbotapi.NewMessage(chatID, message)
+	resp.ParseMode = "MarkDown"
 	_, err := bot.Bot.Send(resp)
 	if err != nil {
 		logrus.Printf("[send message /help] err: %s", err)

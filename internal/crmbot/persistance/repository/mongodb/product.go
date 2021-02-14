@@ -1,6 +1,8 @@
 package mongodb
 
 import (
+	"reflect"
+
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model"
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/repository"
 	"github.com/globalsign/mgo"
@@ -64,6 +66,27 @@ func (r *ProductRepository) FindAllByCategoryID(categoryID string, products *[]*
 		"category_id": categoryID,
 	}
 	return r.Coll.Find(query).All(products)
+}
+
+func (r *ProductRepository) UpdateField(productID, field string, input interface{}) error {
+	if !r.isIDProductExists(productID) {
+		return repository.ErrDocDoesNotExist
+	}
+
+	switch reflect.ValueOf(input).Kind() {
+	case reflect.Float64:
+		input = input.(float64)
+	default:
+		input = input.(string)
+	}
+
+	query := bson.M{
+		"$set": bson.M{
+			field: input,
+		},
+	}
+
+	return r.Coll.UpdateId(productID, query)
 }
 
 // Utils

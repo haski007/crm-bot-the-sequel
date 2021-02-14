@@ -16,7 +16,7 @@ var MainMenu = tgbotapi.NewInlineKeyboardMarkup(
 	),
 	tgbotapi.NewInlineKeyboardRow(
 		tgbotapi.NewInlineKeyboardButtonData("Ревизия "+emoji.MagnifyingGlass, "revision"),
-		tgbotapi.NewInlineKeyboardButtonData("Касса "+emoji.MoneyFace, "cash"),
+		tgbotapi.NewInlineKeyboardButtonData("Касса "+emoji.FaceMoney, "cash"),
 	),
 )
 

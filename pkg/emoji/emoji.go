@@ -26,7 +26,7 @@ const (
 	QuestionMark    = "\U00002049"
 	NewButton       = "\U0001F195"
 	Info            = "\U00002139"
-	MoneyFace       = "\U0001F911"
+	FaceMoney       = "\U0001F911"
 	DollarBanknote  = "\U0001F4B5"
 	MoneyWithWings  = "\U0001F4B8"
 	Receipt         = "\U0001F9FE"
@@ -45,4 +45,5 @@ const (
 	Products        = "\U0001F371"
 	Lorry           = "\U0001F69B"
 	MagnifyingGlass = "\U0001F50D"
+	FaceThinking    = "\U0001F914"
 )

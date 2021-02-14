@@ -81,7 +81,7 @@ func (bot *CrmBotService) hookProductGetByCategory(update tgbotapi.Update) {
 
 		if len(products) == 0 {
 			bot.Errorf(chatID,
-				"В базе данных пока нет продуктов в этой категрии")
+				"В базе данных пока нет продуктов в этой категории")
 			delete(OpsQueue, userID)
 			return
 		}
