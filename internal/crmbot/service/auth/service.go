@@ -1,9 +1,8 @@
-package mongodb
+package auth
 
 import (
 	"crypto/tls"
 	"net"
-	"time"
 
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/config"
 	"github.com/caarlos0/env"
@@ -11,25 +10,26 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var session *mgo.Session
-var cfg config.MongoCfg
+type AuthService struct {
+	UsersColl *mgo.Collection
+}
 
-func init() {
+var mgoCFG config.MongoCfg
+
+func NewAuthService(cfg Config) (*AuthService, error) {
 	if err := env.Parse(&cfg); err != nil {
 		logrus.Fatalf("[env Parse] MongoCfg err: %s", err)
 	}
 
 	tlsConfig := &tls.Config{}
 
-	logrus.Println("Connecting to mongoDB...")
 	dialInfo := &mgo.DialInfo{
-		Timeout: time.Second * 10,
 		Addrs: []string{"cluster0-shard-00-00.k2lrx.mongodb.net:27017",
 			"cluster0-shard-00-01.k2lrx.mongodb.net:27017",
 			"cluster0-shard-00-02.k2lrx.mongodb.net:27017"},
 		Database: "admin",
-		Username: cfg.Username,
-		Password: cfg.Password,
+		Username: mgoCFG.Username,
+		Password: mgoCFG.Password,
 	}
 
 	dialInfo.DialServer = func(addr *mgo.ServerAddr) (net.Conn, error) {
@@ -37,15 +37,17 @@ func init() {
 		return conn, err
 	}
 
-	var err error
-	session, err = mgo.DialWithInfo(dialInfo)
+	session, err := mgo.DialWithInfo(dialInfo)
 	if err != nil {
-		logrus.Fatalf("[mgo Dial] addr: %s | err: %s", cfg.Addr, err)
+		logrus.Fatalf("[NewAuthService] mgo Dial | err: %s", err)
 	}
-
 	session.SetMode(mgo.PrimaryPreferred, false)
 
 	if err = session.Ping(); err != nil {
-		logrus.Fatalf("[mgo Ping] addr: %s | err: %s", cfg.Addr, err)
+		return nil, err
 	}
+
+	return &AuthService{
+		UsersColl: session.DB(mgoCFG.DBName).C(cfg.UsersCollName),
+	}, nil
 }

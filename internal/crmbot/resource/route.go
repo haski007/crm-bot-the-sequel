@@ -80,6 +80,10 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 				go bot.commandProductShow(update)
 			case strings.Contains(command, "edit_product_"):
 				go bot.commandProductEditHandler(update)
+
+			// ---> Users
+			case command == "register":
+				go bot.commandRegisterHandler(update)
 			case command == "test":
 				go bot.commandTestHandler(update)
 

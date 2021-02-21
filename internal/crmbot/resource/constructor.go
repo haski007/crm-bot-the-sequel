@@ -3,21 +3,24 @@ package resource
 import (
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/config"
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/repository/mongodb"
+	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/service/auth"
 	"github.com/caarlos0/env"
-	"github.com/sirupsen/logrus"
-
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/sirupsen/logrus"
 )
 
 type CrmBotService struct {
 	Bot *tgbotapi.BotAPI
 	Cfg *config.Bot
 
+	AuthService *auth.AuthService
+
 	ProductRepository     *mongodb.ProductRepository
 	CategoryRepository    *mongodb.CategoryRepository
 	SupplierRepository    *mongodb.SupplierRepository
 	TransactionRepository *mongodb.TransactionRepository
 	CashRepository        *mongodb.CashRepository
+	UserRepository        *mongodb.UserRepository
 }
 
 func NewCrmBotService() (*CrmBotService, error) {
@@ -52,9 +55,19 @@ func NewCrmBotService() (*CrmBotService, error) {
 	bot.CashRepository = &mongodb.CashRepository{}
 	bot.CashRepository.InitConn()
 
+	bot.UserRepository = &mongodb.UserRepository{}
+	bot.UserRepository.InitConn()
+
+	// ---> Init Bot
 	bot.Bot, err = tgbotapi.NewBotAPI(bot.Cfg.GetToken().String())
 	if err != nil {
 		return nil, err
+	}
+
+	// ---> AuthService
+	bot.AuthService, err = auth.NewAuthService(auth.Config{UsersCollName: "users"})
+	if err != nil {
+		logrus.Fatalf("[NewAuthService] err: %s", err)
 	}
 
 	bot.Bot.Debug = true

@@ -28,3 +28,7 @@ type Token string
 func (t Token) String() string {
 	return string(t)
 }
+
+type Auth struct {
+	AdminPassword string `json:"admin_password" env:"CRM_BOT_THE_SEQUEL_ADMIN_PASS,required"`
+}
