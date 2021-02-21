@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model/keyboards"
-
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model"
+	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model/keyboards"
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/repository"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 

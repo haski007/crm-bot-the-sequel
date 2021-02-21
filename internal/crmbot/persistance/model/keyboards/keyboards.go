@@ -83,6 +83,17 @@ var Stock = tgbotapi.NewInlineKeyboardMarkup(
 	),
 )
 
+// Cash
+var Cash = tgbotapi.NewInlineKeyboardMarkup(
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData("Транзакции "+emoji.DollarBanknote, "transactions"),
+		tgbotapi.NewInlineKeyboardButtonData("Добавить в кассу "+emoji.Plus, "cash_add"),
+	),
+	tgbotapi.NewInlineKeyboardRow(
+		MainMenuButton,
+	),
+)
+
 // Utils
 
 func MarkupByArray(array []string) tgbotapi.ReplyKeyboardMarkup {

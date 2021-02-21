@@ -63,6 +63,14 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 				go bot.callQuantityAddHandler(update)
 			case "quantity_all":
 				go bot.callQuantityAllHandler(update)
+
+			// ---> Cash
+			case "cash":
+				go bot.callCashHandler(update)
+			case "cash_add":
+				go bot.callCashAddHandler(update)
+			case "transactions":
+				go bot.callTransactionsGetAllHandler(update)
 			}
 
 			continue
@@ -97,6 +105,8 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 				go bot.commandProductEditHandler(update)
 			case strings.Contains(command, "remove_user_"):
 				go bot.commandUserRemove(update)
+			case strings.Contains(command, "remove_tx_"):
+				go bot.commandTransactionRemoveHandler(update)
 
 			// ---> Users
 			case command == "register":
@@ -142,6 +152,9 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 					go bot.hookQuantitySet(update)
 				case OperationType_QuantityAll:
 					go bot.hookQuantityAll(update)
+
+				case OperationType_CashAdd:
+					go bot.hookCashAdd(update)
 				}
 			}
 		}
