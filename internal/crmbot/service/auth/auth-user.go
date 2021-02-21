@@ -7,7 +7,7 @@ import (
 
 func (s *AuthService) IsUser(tgID int) bool {
 	query := bson.M{
-		"tg_id": tgID,
+		"tgid": tgID,
 	}
 
 	if count, err := s.UsersColl.Find(query).Count(); err != nil {
@@ -20,8 +20,8 @@ func (s *AuthService) IsUser(tgID int) bool {
 
 func (s *AuthService) IsAdmin(tgID int) bool {
 	query := bson.M{
-		"tg_id":  tgID,
-		"access": "admin",
+		"tgid": tgID,
+		"role": "admin",
 	}
 
 	if count, err := s.UsersColl.Find(query).Count(); err != nil {

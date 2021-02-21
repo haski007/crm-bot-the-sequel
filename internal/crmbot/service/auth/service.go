@@ -17,7 +17,7 @@ type AuthService struct {
 var mgoCFG config.MongoCfg
 
 func NewAuthService(cfg Config) (*AuthService, error) {
-	if err := env.Parse(&cfg); err != nil {
+	if err := env.Parse(&mgoCFG); err != nil {
 		logrus.Fatalf("[env Parse] MongoCfg err: %s", err)
 	}
 

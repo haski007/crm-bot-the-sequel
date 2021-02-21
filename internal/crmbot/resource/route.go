@@ -10,12 +10,20 @@ import (
 
 func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 	for update := range updates {
+
 		if update.EditedMessage != nil {
 			continue
 		}
 
 		// ---> Callbacks of Inline Keyboard
 		if update.CallbackQuery != nil {
+			if !bot.AuthService.IsUser(update.CallbackQuery.From.ID) {
+				bot.Reply(
+					update.CallbackQuery.Message.Chat.ID,
+					"Не зарегистрированный пользователь. Обратитесь к @pdemian за помощью")
+				continue
+			}
+
 			switch update.CallbackQuery.Data {
 			case "home":
 				go bot.callHomeHandler(update)
@@ -62,6 +70,13 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 
 		// ---> Commands
 		if update.Message.IsCommand() {
+			if !bot.AuthService.IsUser(update.Message.From.ID) {
+				bot.Reply(
+					update.Message.Chat.ID,
+					"Не зарегистрированный пользователь. Обратитесь к @pdemian за помощью")
+				continue
+			}
+
 			command := update.Message.CommandWithAt()
 			switch {
 			case command == "menu":
@@ -80,10 +95,14 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 				go bot.commandProductShow(update)
 			case strings.Contains(command, "edit_product_"):
 				go bot.commandProductEditHandler(update)
+			case strings.Contains(command, "remove_user_"):
+				go bot.commandUserRemove(update)
 
 			// ---> Users
 			case command == "register":
 				go bot.commandRegisterHandler(update)
+			case command == "get_users":
+				go bot.commandGetUsersHandler(update)
 			case command == "test":
 				go bot.commandTestHandler(update)
 
@@ -93,6 +112,13 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 
 			// ---> Hooks to process prompt
 		} else {
+			if !bot.AuthService.IsUser(update.Message.From.ID) {
+				bot.Reply(
+					update.Message.Chat.ID,
+					"Не зарегистрированный пользователь. Обратитесь к @pdemian за помощью")
+				continue
+			}
+
 			if op, ok := OpsQueue[update.Message.From.ID]; ok {
 				switch op.Name {
 				case OperationType_CategoryAdd:
@@ -119,6 +145,5 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 				}
 			}
 		}
-
 	}
 }

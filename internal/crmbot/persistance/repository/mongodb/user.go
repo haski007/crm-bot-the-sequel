@@ -23,11 +23,40 @@ func (r *UserRepository) AddUser(user model.User) error {
 	return r.Coll.Insert(user)
 }
 
+func (r *UserRepository) GetAll(users *[]model.User) error {
+	if count, err := r.Coll.Find(nil).Count(); count == 0 {
+		return repository.ErrDocDoesNotExist
+	} else if err != nil {
+		return err
+	}
+
+	return r.Coll.Find(nil).All(users)
+}
+
+func (r *UserRepository) RemoveByID(userID string) error {
+	if !r.isUserExistsByID(userID) {
+		return repository.ErrDocDoesNotExist
+	}
+
+	return r.Coll.RemoveId(userID)
+}
+
 // ---> Utils
 
 func (r *UserRepository) isUserExistsByTgID(tgID int) bool {
 	query := bson.M{
 		"tg_id": tgID,
+	}
+
+	if n, _ := r.Coll.Find(query).Count(); n > 0 {
+		return true
+	}
+	return false
+}
+
+func (r *UserRepository) isUserExistsByID(userID string) bool {
+	query := bson.M{
+		"_id": userID,
 	}
 
 	if n, _ := r.Coll.Find(query).Count(); n > 0 {
