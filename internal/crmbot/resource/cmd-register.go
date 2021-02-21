@@ -1,8 +1,11 @@
 package resource
 
 import (
+	"errors"
 	"fmt"
 	"strings"
+
+	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/repository"
 
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model"
 	"github.com/google/uuid"
@@ -42,13 +45,22 @@ func (bot *CrmBotService) commandRegisterHandler(update tgbotapi.Update) {
 		return
 	}
 
-	bot.UserRepository.AddUser(model.User{
+	if err := bot.UserRepository.AddUser(model.User{
 		ID:        uuid.New().String(),
 		TgID:      update.Message.From.ID,
 		FirstName: update.Message.From.FirstName,
 		LastName:  update.Message.From.LastName,
 		Username:  "@" + update.Message.From.UserName,
 		Role:      role,
-	})
+	}); err != nil {
+		if errors.Is(err, repository.ErrDocAlreadyExists) {
+			bot.Errorf(chatID, "Вы уже зарегистрированы")
+			return
+		}
+		bot.ReportToTheCreator(fmt.Sprintf("[commandRegisterHandler] UserRepository.AddUser | err: %s", err))
+		bot.Errorf(chatID,
+			"Internal Server Error | write to @pdemian to get some help")
+		return
+	}
 	bot.Reply(chatID, fmt.Sprintf("You are succesfully registered as *%s* %s", role, emoji.Check))
 }
