@@ -22,6 +22,8 @@ const (
 	OperationType_QuantitySet OperationType = "QuantitySet"
 	OperationType_QuantityAll OperationType = "QuantityAll"
 
+	OperationType_TransactionsGetAll OperationType = "TransactionsGetAll"
+
 	OperationType_CashAdd OperationType = "CashAdd"
 
 	OperationType_ProductGetByCategory OperationType = "ProductGetByCategory"

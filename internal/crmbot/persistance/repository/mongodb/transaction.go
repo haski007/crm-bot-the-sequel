@@ -1,6 +1,8 @@
 package mongodb
 
 import (
+	"time"
+
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model"
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/repository"
 	"github.com/globalsign/mgo"
@@ -28,6 +30,23 @@ func (r *TransactionRepository) GetAll(transactions *[]model.Transaction) error 
 	}
 
 	return r.Coll.Find(nil).All(transactions)
+}
+
+func (r *TransactionRepository) GetForLastDays(days int, transactions *[]model.Transaction) error {
+	date := time.Now().Add(time.Hour * 24 * time.Duration(-days))
+	query := bson.M{
+		"created_at": bson.M{
+			"$gt": date,
+		},
+	}
+
+	if count, err := r.Coll.Find(query).Count(); count == 0 {
+		return repository.ErrDocDoesNotExist
+	} else if err != nil {
+		return err
+	}
+
+	return r.Coll.Find(query).All(transactions)
 }
 
 func (r *TransactionRepository) RemoveByID(txID string) error {

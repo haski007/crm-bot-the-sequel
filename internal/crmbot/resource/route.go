@@ -153,6 +153,9 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 				case OperationType_QuantityAll:
 					go bot.hookQuantityAll(update)
 
+				case OperationType_TransactionsGetAll:
+					go bot.hookTransactionsGetAll(update)
+
 				case OperationType_CashAdd:
 					go bot.hookCashAdd(update)
 				}

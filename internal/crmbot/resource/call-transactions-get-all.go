@@ -3,9 +3,12 @@ package resource
 import (
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model/keyboards"
+
+	"github.com/Haski007/crm-bot-the-sequel/pkg/emoji"
 
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model"
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/repository"
@@ -15,10 +18,35 @@ import (
 func (bot *CrmBotService) callTransactionsGetAllHandler(update tgbotapi.Update) {
 	chatID := update.CallbackQuery.Message.Chat.ID
 	messageID := update.CallbackQuery.Message.MessageID
+	userID := update.CallbackQuery.From.ID
+
+	OpsQueue[userID] = &Operation{
+		Name: OperationType_TransactionsGetAll,
+		Step: 0,
+		Data: nil,
+	}
+
+	delete := tgbotapi.NewDeleteMessage(chatID, messageID)
+	bot.Bot.Send(delete)
+
+	message := "За сколько дней нужна информация?"
+	bot.Reply(chatID, message)
+}
+
+func (bot *CrmBotService) hookTransactionsGetAll(update tgbotapi.Update) {
+	chatID := update.Message.Chat.ID
+	userID := update.Message.From.ID
+
+	days, err := strconv.Atoi(update.Message.Text)
+	if err != nil {
+		bot.Reply(chatID, "Неверный тип данных! "+emoji.NoEntry+"\n*Попробуйте ещё раз!*")
+		return
+	}
+	delete(OpsQueue, userID)
 
 	var transactions []model.Transaction
 
-	if err := bot.TransactionRepository.GetAll(&transactions); err != nil {
+	if err := bot.TransactionRepository.GetForLastDays(days, &transactions); err != nil {
 		if errors.Is(err, repository.ErrDocDoesNotExist) {
 			bot.Errorf(chatID, "Пока нет проведённых транзакций в базе")
 			return
@@ -26,7 +54,7 @@ func (bot *CrmBotService) callTransactionsGetAllHandler(update tgbotapi.Update) 
 		bot.Errorf(chatID,
 			"Internal Server Error | write to @pdemian to get some help")
 		bot.ReportToTheCreator(
-			fmt.Sprintf("[callTransactionsGetAllHandler] TransactionRepository.GetAll | err: %s", err))
+			fmt.Sprintf("[callTransactionsGetAllHandler] TransactionRepository.GetForLastDays | err: %s", err))
 		return
 	}
 
@@ -51,11 +79,8 @@ func (bot *CrmBotService) callTransactionsGetAllHandler(update tgbotapi.Update) 
 		)
 	}
 
-	answer := tgbotapi.NewEditMessageTextAndMarkup(
-		chatID,
-		messageID,
-		message,
-		keyboards.MainMenu)
+	answer := tgbotapi.NewMessage(chatID, message)
 	answer.ParseMode = "MarkDown"
+	answer.ReplyMarkup = keyboards.MainMenu
 	bot.Bot.Send(answer)
 }
