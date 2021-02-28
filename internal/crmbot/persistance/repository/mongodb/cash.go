@@ -29,3 +29,16 @@ func (r *CashRepository) ChangeAmount(diff model.Money) error {
 
 	return r.Coll.UpdateId(config.MainCashID, queryUpdate)
 }
+
+func (r *CashRepository) GetAmount(cash *model.Money) error {
+	resp := struct {
+		Amount model.Money `bson:"amount"`
+	}{}
+
+	if err := r.Coll.FindId(config.MainCashID).One(&resp); err != nil {
+		return err
+	}
+
+	*cash = resp.Amount
+	return nil
+}

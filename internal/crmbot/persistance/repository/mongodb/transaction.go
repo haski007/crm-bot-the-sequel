@@ -5,6 +5,7 @@ import (
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/repository"
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
+	"github.com/jinzhu/now"
 )
 
 type TransactionRepository struct {
@@ -43,6 +44,16 @@ func (r *TransactionRepository) GetTxByID(txID string, tx *model.Transaction) er
 	}
 
 	return r.Coll.FindId(txID).One(tx)
+}
+
+func (r *TransactionRepository) GetCurrentMonth(transactions *[]*model.Transaction) error {
+	query := bson.M{
+		"created_at": bson.M{
+			"$gt": now.BeginningOfMonth(),
+		},
+	}
+
+	return r.Coll.Find(query).All(transactions)
 }
 
 // ---> Utils

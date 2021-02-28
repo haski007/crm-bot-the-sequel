@@ -8,6 +8,10 @@ func NewMoney(input float64) Money {
 	return Money(input)
 }
 
+func (m Money) Float64() float64 {
+	return float64(m)
+}
+
 type TxType string
 
 const (
