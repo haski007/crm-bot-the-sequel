@@ -21,7 +21,7 @@ clean:
 run:
 	@$(GORUN) $(CMD_PATH)*.go
 deps:
-	$(GOGET) ./...
+	$(GOGET) -u ./...
 
 
 # Cross compilation

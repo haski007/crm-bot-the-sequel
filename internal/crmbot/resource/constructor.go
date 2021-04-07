@@ -4,7 +4,6 @@ import (
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/config"
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/repository/mongodb"
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/service/auth"
-	"github.com/caarlos0/env"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/sirupsen/logrus"
 )
@@ -26,37 +25,41 @@ type CrmBotService struct {
 func NewCrmBotService() (*CrmBotService, error) {
 	var err error
 
+	var cfg config.Config
+	if err := cfg.Parse(config.ConfigFile); err != nil {
+		logrus.Fatalf("[cfg.Parse] err: %s", err)
+	}
+
 	bot := &CrmBotService{}
 
 	/*
 	** ---> Bot configs
 	 */
-	bot.Cfg = &config.Bot{}
-	if err := env.Parse(bot.Cfg); err != nil {
-		logrus.Fatalf("[env Parse] Bot config err: %s", err)
-	}
+	bot.Cfg = &cfg.Bot
 
 	/*
 	** ---> mongo Collection
 	 */
 
+	mgoSession := mongodb.InitDBConnection(cfg.MongoDB)
+
 	bot.ProductRepository = &mongodb.ProductRepository{}
-	bot.ProductRepository.InitConn()
+	bot.ProductRepository.InitConn(mgoSession, cfg.MongoDB.DBName)
 
 	bot.CategoryRepository = &mongodb.CategoryRepository{}
-	bot.CategoryRepository.InitConn()
+	bot.CategoryRepository.InitConn(mgoSession, cfg.MongoDB.DBName)
 
 	bot.SupplierRepository = &mongodb.SupplierRepository{}
-	bot.SupplierRepository.InitConn()
+	bot.SupplierRepository.InitConn(mgoSession, cfg.MongoDB.DBName)
 
 	bot.TransactionRepository = &mongodb.TransactionRepository{}
-	bot.TransactionRepository.InitConn()
+	bot.TransactionRepository.InitConn(mgoSession, cfg.MongoDB.DBName)
 
 	bot.CashRepository = &mongodb.CashRepository{}
-	bot.CashRepository.InitConn()
+	bot.CashRepository.InitConn(mgoSession, cfg.MongoDB.DBName)
 
 	bot.UserRepository = &mongodb.UserRepository{}
-	bot.UserRepository.InitConn()
+	bot.UserRepository.InitConn(mgoSession, cfg.MongoDB.DBName)
 
 	// ---> Init Bot
 	bot.Bot, err = tgbotapi.NewBotAPI(bot.Cfg.GetToken().String())
@@ -65,7 +68,11 @@ func NewCrmBotService() (*CrmBotService, error) {
 	}
 
 	// ---> AuthService
-	bot.AuthService, err = auth.NewAuthService(auth.Config{UsersCollName: "users"})
+	bot.AuthService, err = auth.NewAuthService(auth.Config{
+		MgoSession:    mgoSession,
+		Mongo:         cfg.MongoDB,
+		UsersCollName: "users",
+	})
 	if err != nil {
 		logrus.Fatalf("[NewAuthService] err: %s", err)
 	}

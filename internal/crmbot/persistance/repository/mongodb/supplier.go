@@ -11,8 +11,8 @@ type SupplierRepository struct {
 	Coll *mgo.Collection
 }
 
-func (r *SupplierRepository) InitConn() {
-	r.Coll = session.DB(cfg.DBName).C("suppliers")
+func (r *SupplierRepository) InitConn(session *mgo.Session, dbName string) {
+	r.Coll = session.DB(dbName).C("suppliers")
 }
 
 func (r *SupplierRepository) Add(supplier model.Supplier) error {

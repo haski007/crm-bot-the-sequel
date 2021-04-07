@@ -11,8 +11,8 @@ type CategoryRepository struct {
 	Coll *mgo.Collection
 }
 
-func (r *CategoryRepository) InitConn() {
-	r.Coll = session.DB(cfg.DBName).C("categories")
+func (r *CategoryRepository) InitConn(session *mgo.Session, dbName string) {
+	r.Coll = session.DB(dbName).C("categories")
 }
 
 func (r *CategoryRepository) Add(category model.Category) error {

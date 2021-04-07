@@ -11,8 +11,8 @@ type UserRepository struct {
 	Coll *mgo.Collection
 }
 
-func (r *UserRepository) InitConn() {
-	r.Coll = session.DB(cfg.DBName).C("users")
+func (r *UserRepository) InitConn(session *mgo.Session, dbName string) {
+	r.Coll = session.DB(dbName).C("users")
 }
 
 func (r *UserRepository) AddUser(user model.User) error {

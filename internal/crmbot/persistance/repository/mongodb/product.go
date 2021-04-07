@@ -13,8 +13,8 @@ type ProductRepository struct {
 	Coll *mgo.Collection
 }
 
-func (r *ProductRepository) InitConn() {
-	r.Coll = session.DB(cfg.DBName).C("products")
+func (r *ProductRepository) InitConn(session *mgo.Session, dbName string) {
+	r.Coll = session.DB(dbName).C("products")
 }
 
 func (r *ProductRepository) Add(category model.Product) error {

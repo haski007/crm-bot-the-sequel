@@ -1,8 +1,30 @@
 package config
 
+import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+)
+
+func (cfg *Config) Parse(filename string) error {
+	if filename == "" {
+		return fmt.Errorf("config filename is empty")
+	}
+
+	byteValue, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return err
+	}
+
+	if err := json.Unmarshal(byteValue, cfg); err != nil {
+		return err
+	}
+	return nil
+}
+
 type Config struct {
-	MongoDB MongoCfg `json:"mongo"`
-	Bot     Bot      `json:"bot"`
+	MongoDB Mongo `json:"mongo"`
+	Bot     Bot   `json:"bot"`
 }
 
 type Bot struct {
@@ -10,13 +32,11 @@ type Bot struct {
 	CreatorID int64 `json:"creator_id" env:"CREATOR_ID"`
 }
 
-type MongoCfg struct {
-	Addr     string `json:"addr" env:"DATABASE_URL"`
-	HostName string `json:"host_name" env:"MONGO_HOST,required"`
-	Port     string `json:"port" env:"MONGO_PORT" default:"27017"`
-	DBName   string `json:"db_name" env:"MONGO_DBNAME,required"`
-	Username string `json:"username" env:"MONGO_USERNAME,required"`
-	Password string `json:"password" env:"MONGO_PASSWORD,required"`
+type Mongo struct {
+	Addrs    []string `json:"addrs"`
+	Username string   `json:"username"`
+	Password string   `json:"password"`
+	DBName   string   `json:"db_name"`
 }
 
 func (b Bot) GetToken() Token {

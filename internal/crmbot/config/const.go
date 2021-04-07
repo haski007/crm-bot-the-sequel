@@ -1,7 +1,8 @@
 package config
 
 const (
-	RoleAdmin = "admin"
+	RoleAdmin  = "admin"
+	ConfigFile = ".env.json"
 
 	MainCashID = "86a1b864-744f-11eb-9439-0242ac130002"
 

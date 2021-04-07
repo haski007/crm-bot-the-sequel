@@ -13,8 +13,8 @@ type CashRepository struct {
 	Coll *mgo.Collection
 }
 
-func (r *CashRepository) InitConn() {
-	r.Coll = session.DB(cfg.DBName).C("cash")
+func (r *CashRepository) InitConn(session *mgo.Session, dbName string) {
+	r.Coll = session.DB(dbName).C("cash")
 }
 
 func (r *CashRepository) ChangeAmount(diff model.Money) error {

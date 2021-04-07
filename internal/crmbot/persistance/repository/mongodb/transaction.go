@@ -14,8 +14,8 @@ type TransactionRepository struct {
 	Coll *mgo.Collection
 }
 
-func (r *TransactionRepository) InitConn() {
-	r.Coll = session.DB(cfg.DBName).C("transactions")
+func (r *TransactionRepository) InitConn(session *mgo.Session, dbName string) {
+	r.Coll = session.DB(dbName).C("transactions")
 }
 
 func (r *TransactionRepository) Add(transaction model.Transaction) error {
