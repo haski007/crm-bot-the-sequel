@@ -66,7 +66,7 @@ func (bot *CrmBotService) hookCashAdd(update tgbotapi.Update) {
 				update.Message.From.UserName),
 			Amount:    model.NewMoney(amount),
 			Type:      txType,
-			CreatedAt: time.Time{},
+			CreatedAt: time.Now(),
 			Comment:   "",
 		}
 		OpsQueue[userID].Step++

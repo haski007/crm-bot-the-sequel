@@ -15,8 +15,10 @@ func (m Money) Float64() float64 {
 type TxType string
 
 const (
-	TxAddCash TxType = "TxAddCash"
-	TxGetCash TxType = "TxGetCash"
+	TxAddCash  TxType = "TxAddCash"
+	TxGetCash  TxType = "TxGetCash"
+	TxAddGoods TxType = "TxAddGoods"
+	TxGetGoods TxType = "TxGetGoods"
 )
 
 const (
@@ -30,4 +32,13 @@ type Transaction struct {
 	Type      TxType    `json:"type" bson:"type"`
 	CreatedAt time.Time `json:"created_at" bson:"created_at"`
 	Comment   string    `json:"comment" bson:"comment"`
+}
+
+type TransactionStock struct {
+	ID           string    `json:"_id" bson:"_id"`
+	Author       string    `json:"author" bson:"author"`
+	ProductTitle string    `json:"product_title" bson:"product_title"`
+	Amount       float64   `json:"Amount" bson:"Amount"`
+	Type         TxType    `json:"type" bson:"type"`
+	CreatedAt    time.Time `json:"created_at" bson:"created_at"`
 }

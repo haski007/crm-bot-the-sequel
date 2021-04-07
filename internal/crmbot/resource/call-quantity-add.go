@@ -3,6 +3,9 @@ package resource
 import (
 	"fmt"
 	"strconv"
+	"time"
+
+	"github.com/google/uuid"
 
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model"
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model/keyboards"
@@ -113,7 +116,7 @@ func (bot *CrmBotService) hookQuantityAdd(update tgbotapi.Update) {
 		OpsQueue[userID].Data = productTitle
 		OpsQueue[userID].Step++
 
-		message := "Укажите новое количество продукта:"
+		message := "Укажите количество продукта:"
 		answer := tgbotapi.NewMessage(chatID, message)
 		answer.ReplyMarkup = tgbotapi.NewHideKeyboard(false)
 		bot.Bot.Send(answer)
@@ -138,6 +141,31 @@ func (bot *CrmBotService) hookQuantityAdd(update tgbotapi.Update) {
 			bot.ReportToTheCreator(fmt.Sprintf("[hookQuantityAll] ProductRepository.FindProductByTitle | err: %s", err))
 			bot.Errorf(chatID,
 				"Internal Server Error | write to @pdemian to get some help")
+			return
+		}
+
+		var txType model.TxType
+		if value > 0 {
+			txType = model.TxAddGoods
+		} else {
+			txType = model.TxGetGoods
+		}
+
+		if err := bot.TransactionRepository.Add(model.TransactionStock{
+			ID: uuid.New().String(),
+			Author: fmt.Sprintf("%s %s (%s)",
+				update.Message.From.FirstName,
+				update.Message.From.LastName,
+				update.Message.From.UserName),
+			Amount:       float64(value),
+			Type:         txType,
+			CreatedAt:    time.Now(),
+			ProductTitle: productTitle,
+		}); err != nil {
+			bot.Errorf(chatID,
+				"Internal Server Error | write to @pdemian to get some help")
+			bot.ReportToTheCreator(
+				fmt.Sprintf("[hookQuantityAdd] TransactionRepository.Add| err: %s", err))
 			return
 		}
 

@@ -18,8 +18,8 @@ func (r *TransactionRepository) InitConn(session *mgo.Session, dbName string) {
 	r.Coll = session.DB(dbName).C("transactions")
 }
 
-func (r *TransactionRepository) Add(transaction model.Transaction) error {
-	return r.Coll.Insert(transaction)
+func (r *TransactionRepository) Add(tx interface{}) error {
+	return r.Coll.Insert(tx)
 }
 
 func (r *TransactionRepository) GetAll(transactions *[]model.Transaction) error {
