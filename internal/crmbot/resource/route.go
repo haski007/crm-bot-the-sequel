@@ -71,6 +71,10 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 				go bot.callCashAddHandler(update)
 			case "transactions":
 				go bot.callTransactionsGetAllHandler(update)
+
+			// ---> Revision
+			case "revision":
+				go bot.callRevision(update)
 			}
 
 			continue

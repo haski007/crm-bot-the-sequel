@@ -94,6 +94,17 @@ var Cash = tgbotapi.NewInlineKeyboardMarkup(
 	),
 )
 
+// Revision
+var Revision = tgbotapi.NewInlineKeyboardMarkup(
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData("История "+emoji.Page, "revision_history"),
+		tgbotapi.NewInlineKeyboardButtonData("Провести ревизию "+emoji.Plus, "revision_process"),
+	),
+	tgbotapi.NewInlineKeyboardRow(
+		MainMenuButton,
+	),
+)
+
 // Utils
 
 func MarkupByArray(array []string) tgbotapi.ReplyKeyboardMarkup {
