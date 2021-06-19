@@ -20,6 +20,7 @@ type CrmBotService struct {
 	TransactionRepository *mongodb.TransactionRepository
 	CashRepository        *mongodb.CashRepository
 	UserRepository        *mongodb.UserRepository
+	RevisionRepository    *mongodb.RevisionRepository
 }
 
 func NewCrmBotService() (*CrmBotService, error) {
@@ -60,6 +61,9 @@ func NewCrmBotService() (*CrmBotService, error) {
 
 	bot.UserRepository = &mongodb.UserRepository{}
 	bot.UserRepository.InitConn(mgoSession, cfg.MongoDB.DBName)
+
+	bot.RevisionRepository = &mongodb.RevisionRepository{}
+	bot.RevisionRepository.InitConn(mgoSession, cfg.MongoDB.DBName)
 
 	// ---> Init Bot
 	bot.Bot, err = tgbotapi.NewBotAPI(bot.Cfg.GetToken().String())

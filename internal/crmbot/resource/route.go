@@ -75,6 +75,10 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 			// ---> Revision
 			case "revision":
 				go bot.callRevision(update)
+			case "revision_process":
+				go bot.callRevisionProcess(update)
+			case "revision_history":
+				go bot.callRevisionHistory(update)
 			}
 
 			continue

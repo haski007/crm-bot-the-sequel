@@ -10,6 +10,8 @@ require (
 	github.com/google/uuid v1.2.0
 	github.com/jinzhu/now v1.1.2
 	github.com/joho/godotenv v1.3.0
+	github.com/kr/pretty v0.2.1
+	github.com/kr/text v0.2.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.2.2
