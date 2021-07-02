@@ -1,6 +1,7 @@
 package resource
 
 import (
+	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/config"
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model/keyboards"
 	"github.com/Haski007/crm-bot-the-sequel/pkg/emoji"
 
@@ -16,6 +17,6 @@ func (bot *CrmBotService) callProductSettingsHandler(update tgbotapi.Update) {
 		messageID,
 		emoji.Wrench+" *Настройка продуктов* "+emoji.Gear,
 		keyboards.ProductSettings)
-	answer.ParseMode = "MarkDown"
+	answer.ParseMode = config.MarkdownParseMode
 	bot.Bot.Send(answer)
 }

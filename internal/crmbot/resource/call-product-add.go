@@ -2,6 +2,7 @@ package resource
 
 import (
 	"fmt"
+	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/config"
 	"strconv"
 
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/repository"
@@ -231,7 +232,7 @@ func (bot *CrmBotService) hookProductAdd(update tgbotapi.Update) {
 
 			answer = tgbotapi.NewMessage(chatID, emoji.House+" *Главное Меню*"+emoji.HouseWithGarden)
 			answer.ReplyMarkup = keyboards.MainMenu
-			answer.ParseMode = "Markdown"
+			answer.ParseMode = config.MarkdownParseMode
 			bot.Bot.Send(answer)
 		}
 	}

@@ -2,6 +2,7 @@ package resource
 
 import (
 	"fmt"
+	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/config"
 	"strings"
 
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model"
@@ -43,7 +44,7 @@ func (bot *CrmBotService) commandSupplierEditHandler(update tgbotapi.Update) {
 		model.SupplierEditPhone.String(),
 		model.SupplierEditDescription.String(),
 	})
-	answer.ParseMode = "MarkDown"
+	answer.ParseMode = config.MarkdownParseMode
 	bot.Bot.Send(answer)
 }
 

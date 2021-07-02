@@ -32,6 +32,34 @@ func (r *TransactionRepository) GetAll(transactions *[]model.Transaction) error 
 	return r.Coll.Find(nil).All(transactions)
 }
 
+func (r *TransactionRepository) GetTxAfterDate(date time.Time, transactions *[]model.Transaction) error {
+	query := bson.M{
+		"type": bson.M{"$in": []model.TxType{
+			model.TxGetCash,
+			model.TxAddCash,
+		}},
+		"created_at": bson.M{
+			"$gt": date,
+		},
+	}
+
+	return r.Coll.Find(query).All(transactions)
+}
+
+func (r *TransactionRepository) GetStockTxAfterDate(date time.Time, transactions *[]model.TransactionStock) error {
+	query := bson.M{
+		"type": bson.M{"$in": []model.TxType{
+			model.TxGetGoods,
+			model.TxAddGoods,
+		}},
+		"created_at": bson.M{
+			"$gt": date,
+		},
+	}
+
+	return r.Coll.Find(query).All(transactions)
+}
+
 func (r *TransactionRepository) GetForLastDays(days int, transactions *[]model.Transaction) error {
 	date := time.Now().Add(time.Hour * 24 * time.Duration(-days))
 	query := bson.M{

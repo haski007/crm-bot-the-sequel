@@ -2,6 +2,7 @@ package resource
 
 import (
 	"fmt"
+	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/config"
 	"strings"
 
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model/keyboards"
@@ -63,7 +64,7 @@ func (bot *CrmBotService) commandProductShow(update tgbotapi.Update) {
 	message := fmt.Sprintf("Продукт: *%s*\n"+
 		"Цена закупки: *%.2f*\n"+
 		"Цена продажи: *%.2f*\n"+
-		"Количество на складе: *%d*\n"+
+		"Количество на складе: *%.2f*\n"+
 		"Единица измерения *%s*\n"+
 		"Категория: *%s*\n"+
 		"Поставщик: *%s*\n"+
@@ -82,7 +83,7 @@ func (bot *CrmBotService) commandProductShow(update tgbotapi.Update) {
 		strings.ReplaceAll(product.ID, "-", "\\_"),
 	)
 	answer := tgbotapi.NewMessage(chatID, message)
-	answer.ParseMode = "MarkDown"
+	answer.ParseMode = config.MarkdownParseMode
 	answer.ReplyMarkup = keyboards.MainMenu
 	bot.Bot.Send(answer)
 }

@@ -3,6 +3,7 @@ package resource
 import (
 	"errors"
 	"fmt"
+	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/config"
 	"strings"
 
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model"
@@ -48,7 +49,7 @@ func (bot *CrmBotService) commandGetUsersHandler(update tgbotapi.Update) {
 	}
 
 	answer := tgbotapi.NewMessage(chatID, message)
-	answer.ParseMode = "MarkDown"
+	answer.ParseMode = config.MarkdownParseMode
 	answer.ReplyMarkup = keyboards.MainMenu
 	bot.Bot.Send(answer)
 }

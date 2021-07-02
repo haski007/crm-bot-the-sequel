@@ -105,6 +105,12 @@ var Revision = tgbotapi.NewInlineKeyboardMarkup(
 	),
 )
 
+var RevisionProduct = tgbotapi.NewInlineKeyboardMarkup(
+	tgbotapi.NewInlineKeyboardRow(
+		MainMenuButton,
+	),
+)
+
 // Utils
 
 func MarkupByArray(array []string) tgbotapi.ReplyKeyboardMarkup {

@@ -2,6 +2,7 @@ package resource
 
 import (
 	"fmt"
+	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/config"
 	"strings"
 
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model/keyboards"
@@ -42,6 +43,6 @@ func (bot *CrmBotService) commandSupplierRemove(update tgbotapi.Update) {
 	message := "Поставщик успешно удалён " + emoji.Basket
 	answer := tgbotapi.NewMessage(chatID, message)
 	answer.ReplyMarkup = keyboards.MainMenu
-	answer.ParseMode = "MarkDown"
+	answer.ParseMode = config.MarkdownParseMode
 	bot.Bot.Send(answer)
 }

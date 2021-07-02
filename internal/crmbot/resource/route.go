@@ -166,6 +166,9 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 
 				case OperationType_CashAdd:
 					go bot.hookCashAdd(update)
+
+				case OperationType_RevisionProcess:
+					go bot.hookRevisionProcess(update)
 				}
 			}
 		}

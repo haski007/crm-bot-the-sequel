@@ -2,6 +2,7 @@ package resource
 
 import (
 	"fmt"
+	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/config"
 	"strconv"
 	"time"
 
@@ -121,9 +122,9 @@ func (bot *CrmBotService) hookQuantityAdd(update tgbotapi.Update) {
 		answer.ReplyMarkup = tgbotapi.NewHideKeyboard(false)
 		bot.Bot.Send(answer)
 	case getQuantityAddValue:
-		value, err := strconv.Atoi(update.Message.Text)
+		value, err := strconv.ParseFloat(update.Message.Text, 64)
 		if err != nil {
-			bot.Reply(chatID, fmt.Sprintf("\"%s\" - не натуральное число! %s\n*Попробуй ещё раз*\n", update.Message.Text, emoji.NoEntry))
+			bot.Reply(chatID, fmt.Sprintf("\"%s\" - не число! %s\n*Попробуй ещё раз*\n", update.Message.Text, emoji.NoEntry))
 			return
 		}
 
@@ -157,10 +158,11 @@ func (bot *CrmBotService) hookQuantityAdd(update tgbotapi.Update) {
 				update.Message.From.FirstName,
 				update.Message.From.LastName,
 				update.Message.From.UserName),
-			Amount:       float64(value),
+			Amount:       value,
 			Type:         txType,
 			CreatedAt:    time.Now(),
 			ProductTitle: productTitle,
+			ProductPrice: product.BidPrice,
 		}); err != nil {
 			bot.Errorf(chatID,
 				"Internal Server Error | write to @pdemian to get some help")
@@ -169,10 +171,10 @@ func (bot *CrmBotService) hookQuantityAdd(update tgbotapi.Update) {
 			return
 		}
 
-		message := fmt.Sprintf("Количество \"%s\" теперь: *%d* "+emoji.Check, product.Title, product.Quantity)
+		message := fmt.Sprintf("Количество \"%s\" теперь: *%.2f* "+emoji.Check, product.Title, product.Quantity)
 		answer := tgbotapi.NewMessage(chatID, message)
 		answer.ReplyMarkup = keyboards.MainMenu
-		answer.ParseMode = "MarkDown"
+		answer.ParseMode = config.MarkdownParseMode
 		bot.Bot.Send(answer)
 	}
 }

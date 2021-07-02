@@ -1,12 +1,11 @@
 package mongodb
 
 import (
-	"reflect"
-
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model"
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/repository"
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
+	"time"
 )
 
 type RevisionRepository struct {
@@ -19,6 +18,10 @@ func (r *RevisionRepository) InitConn(session *mgo.Session, dbName string) {
 
 func (r *RevisionRepository) Add(revision model.Revision) error {
 	return r.Coll.Insert(revision)
+}
+
+func (r *RevisionRepository) Update(revision model.Revision) error {
+	return r.Coll.UpdateId(revision.ID, revision)
 }
 
 func (r *RevisionRepository) FindAll(products *[]*model.Product) error {
@@ -43,18 +46,11 @@ func (r *RevisionRepository) RemoveByID(id string) error {
 	return err
 }
 
-func (r *RevisionRepository) UpdateField(revisionID, field string, input interface{}) error {
-
-	switch reflect.ValueOf(input).Kind() {
-	case reflect.Float64:
-		input = input.(float64)
-	case reflect.String:
-		input = input.(string)
-	}
-
+func (r *RevisionRepository) UpdateStatus(revisionID, newStatus string) error {
 	query := bson.M{
 		"$set": bson.M{
-			field: input,
+			"status":     newStatus,
+			"updated_at": time.Now(),
 		},
 	}
 
@@ -62,6 +58,15 @@ func (r *RevisionRepository) UpdateField(revisionID, field string, input interfa
 	if err == mgo.ErrNotFound {
 		return repository.ErrDocDoesNotExist
 	}
+	return err
+}
+
+func (r *RevisionRepository) FindPreLast(revision *model.Revision) error {
+	err := r.Coll.Find(bson.M{"status": model.RevisionCompleted}).Sort("-created_at").Limit(1).One(revision)
+	if err == mgo.ErrNotFound {
+		return repository.ErrDocDoesNotExist
+	}
+
 	return err
 }
 

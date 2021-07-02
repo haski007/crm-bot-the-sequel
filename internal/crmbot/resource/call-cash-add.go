@@ -2,6 +2,7 @@ package resource
 
 import (
 	"fmt"
+	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/config"
 	"strconv"
 	"time"
 
@@ -104,7 +105,7 @@ func (bot *CrmBotService) hookCashAdd(update tgbotapi.Update) {
 			tx.ID)
 		answer := tgbotapi.NewMessage(chatID, message)
 		answer.ReplyMarkup = keyboards.MainMenu
-		answer.ParseMode = "Markdown"
+		answer.ParseMode = config.MarkdownParseMode
 		bot.Bot.Send(answer)
 	}
 }

@@ -2,6 +2,7 @@ package resource
 
 import (
 	"fmt"
+	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/config"
 
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model"
 
@@ -67,7 +68,7 @@ func (bot *CrmBotService) callCashHandler(update tgbotapi.Update) {
 		messageID,
 		message,
 		keyboards.Cash)
-	answer.ParseMode = "MarkDown"
+	answer.ParseMode = config.MarkdownParseMode
 	bot.Bot.Send(answer)
 }
 

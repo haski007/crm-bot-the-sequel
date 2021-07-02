@@ -1,5 +1,7 @@
 package resource
 
+import "github.com/sirupsen/logrus"
+
 type OperationType string
 
 type step int
@@ -27,6 +29,8 @@ const (
 	OperationType_CashAdd OperationType = "CashAdd"
 
 	OperationType_ProductGetByCategory OperationType = "ProductGetByCategory"
+
+	OperationType_RevisionProcess OperationType = "RevisionProcess"
 )
 
 type Step int
@@ -35,6 +39,13 @@ type Operation struct {
 	Name OperationType
 	Step Step
 	Data interface{}
+}
+
+func deleteQueuesOfUser(userID int) {
+	if _, found := OpsQueue[userID]; found {
+		logrus.Printf("Workflow %s - was rejected by user | user_id=%d", OpsQueue[userID].Name, userID)
+		delete(OpsQueue, userID)
+	}
 }
 
 // OpsQueue - map to store all queues for operations

@@ -2,6 +2,7 @@ package resource
 
 import (
 	"fmt"
+	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/config"
 	"strings"
 
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model"
@@ -65,6 +66,6 @@ func (bot *CrmBotService) commandTransactionRemoveHandler(update tgbotapi.Update
 	message := "Транзакция успешно удалёна " + emoji.Basket
 	answer := tgbotapi.NewMessage(chatID, message)
 	answer.ReplyMarkup = keyboards.MainMenu
-	answer.ParseMode = "MarkDown"
+	answer.ParseMode = config.MarkdownParseMode
 	bot.Bot.Send(answer)
 }

@@ -46,4 +46,6 @@ const (
 	Lorry           = "\U0001F69B"
 	MagnifyingGlass = "\U0001F50D"
 	FaceThinking    = "\U0001F914"
+	FaceWinking     = "\U0001F609"
+	PartyPopper     = "\U0001F389"
 )

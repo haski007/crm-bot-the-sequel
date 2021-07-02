@@ -2,6 +2,7 @@ package resource
 
 import (
 	"fmt"
+	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/config"
 
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model"
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model/keyboards"
@@ -88,7 +89,7 @@ func (bot *CrmBotService) hookQuantityAll(update tgbotapi.Update) {
 
 		var message string
 		for i, product := range products {
-			message += fmt.Sprintf("%d) *%s* (%s) | *%d* | %.2f/%.2f\n",
+			message += fmt.Sprintf("%d) *%s* (%s) | *%.2f* | %.2f/%.2f\n",
 				i+1,
 				product.Title,
 				categoryTitle,
@@ -100,13 +101,13 @@ func (bot *CrmBotService) hookQuantityAll(update tgbotapi.Update) {
 
 		var answer tgbotapi.MessageConfig
 		answer = tgbotapi.NewMessage(chatID, message)
-		answer.ParseMode = "Markdown"
+		answer.ParseMode = config.MarkdownParseMode
 		answer.ReplyMarkup = tgbotapi.NewHideKeyboard(false)
 		bot.Bot.Send(answer)
 
 		answer = tgbotapi.NewMessage(chatID, emoji.House+" *Главное Меню*"+emoji.HouseWithGarden)
 		answer.ReplyMarkup = keyboards.MainMenu
-		answer.ParseMode = "Markdown"
+		answer.ParseMode = config.MarkdownParseMode
 		bot.Bot.Send(answer)
 	}
 }
