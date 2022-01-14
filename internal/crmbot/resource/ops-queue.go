@@ -4,12 +4,6 @@ import "github.com/sirupsen/logrus"
 
 type OperationType string
 
-type step int
-
-func (s step) Int() int {
-	return int(s)
-}
-
 const (
 	OperationType_CategoryAdd  OperationType = "CategoryAdd"
 	OperationType_CategoryEdit OperationType = "CategoryEdit"

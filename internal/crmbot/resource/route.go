@@ -86,7 +86,8 @@ func (bot *CrmBotService) HandleRoutes(updates tgbotapi.UpdatesChannel) {
 
 		// ---> Commands
 		if update.Message.IsCommand() {
-			if !bot.AuthService.IsUser(update.Message.From.ID) {
+			if !bot.AuthService.IsUser(update.Message.From.ID) && 
+				update.Message.CommandWithAt() != "register"{
 				bot.Reply(
 					update.Message.Chat.ID,
 					"Не зарегистрированный пользователь. Обратитесь к @pdemian за помощью")

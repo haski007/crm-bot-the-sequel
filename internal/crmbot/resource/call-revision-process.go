@@ -2,17 +2,19 @@ package resource
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/config"
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model"
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/model/keyboards"
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/repository"
 	"github.com/Haski007/crm-bot-the-sequel/internal/crmbot/persistance/repository/mongodb"
 	"github.com/Haski007/crm-bot-the-sequel/pkg/emoji"
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/google/uuid"
-	"strconv"
-	"strings"
-	"time"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 const (
@@ -362,7 +364,7 @@ func (bot CrmBotService) startRevisionWorkflow(info startNewRevisionInfo) error 
 	}
 
 	if len(revInfo.products) == 0 {
-		return fmt.Errorf("Пока нет продуктов в базе данных ")
+		return fmt.Errorf("пока нет продуктов в базе данных ")
 	}
 
 	OpsQueue[info.userID] = &Operation{
